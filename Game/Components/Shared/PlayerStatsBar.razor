@@ -1,0 +1,20 @@
+@using Game.Models
+
+@if (Stats is not null)
+{
+    <section class="player-stats-bar shadow-sm">
+        @foreach (var stat in Stats.AsDictionary())
+        {
+            <div class="player-stat">
+                <span class="label">@stat.Key</span>
+                <span class="value">@stat.Value</span>
+            </div>
+        }
+    </section>
+}
+
+@code {
+    [Parameter]
+    public Stats? Stats { get; set; }
+}
+

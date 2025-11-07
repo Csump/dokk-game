@@ -9,13 +9,13 @@ public static class SeedData
     {
         if (context.Situations.Any()) return;
 
-        var s1 = new Decision { Id = new Guid(), Title = "The Beginning", Text = "Your adventure starts!", IsStarter = true};
-        var s2 = new Info { Id = new Guid(), Title = "The Crossroad", Text = "You see two paths ahead." };
-        var s3 = new Conversation { Id = new Guid(), Title = "Victory!", Text = "You’ve reached the end.", IsTerminal = true };
+        var s1 = new Decision { Id = Guid.NewGuid(), Title = "The Beginning", Text = "Your adventure starts!", IsStarter = true, IllustrationUrl = "images/start.png"};
+        var s2 = new Info { Id = Guid.NewGuid(), Title = "The Crossroad", Text = "You see two paths ahead.", IllustrationUrl = "images/crossroad.png" };
+        var s3 = new Conversation { Id = Guid.NewGuid(), Title = "Victory!", Text = "You’ve reached the end.", IsTerminal = true, IllustrationUrl = "images/victory.png" };
 
         var c1 = new Choice
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             SituationId = s1.Id,
             Text = "Walk forward",
             NextSituationId = s2.Id,
@@ -24,7 +24,7 @@ public static class SeedData
 
         var c2 = new Choice
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             SituationId = s2.Id,
             Text = "Take the left path",
             NextSituationId = s3.Id,

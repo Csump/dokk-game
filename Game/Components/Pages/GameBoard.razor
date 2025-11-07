@@ -1,0 +1,144 @@
+@page "/play"
+@using Game.Models
+@using Game.Services
+@using Game.Components.Shared
+
+@inject GameState GameState
+@inject GameService GameService
+@inject NavigationManager Navigation
+
+<PageTitle>Gameplay</PageTitle>
+
+@if (!GameState.HasActiveSession)
+{
+    <div class="alert alert-info">
+        You don’t have an active game right now. <a href="/setup">Create a character</a> to get started.
+    </div>
+}
+else if (isLoading || currentSituation is null)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border" role="status"></div>
+        <p class="mt-3 text-muted">Preparing your next situation...</p>
+    </div>
+}
+else
+{
+    <div class="row gy-4">
+        <div class="col-xl-8">
+            <SituationCard Situation="@currentSituation">
+                <BodyContent>
+                    @if (currentSituation is Minigame)
+                    {
+                        <MinigamePlaceholder />
+                    }
+                    else if (HasChoices)
+                    {
+                        <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
+                    }
+                    else if (!currentSituation.IsTerminal)
+                    {
+                        <button class="btn btn-primary" @onclick="ContinueAsync" disabled="@isProcessing">
+                            @(isProcessing ? "Loading..." : "Continue")
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-success" @onclick="GoToResults" disabled="@isProcessing">View Evaluation</button>
+                    }
+                </BodyContent>
+            </SituationCard>
+        </div>
+        <div class="col-xl-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 d-flex justify-content-between align-items-center">
+                        <span>Decision history</span>
+                        <span class="badge bg-secondary">@GameState.CurrentPlayer?.Decisions.Count</span>
+                    </h2>
+                    <DecisionHistory Decisions="GameState.CurrentPlayer?.Decisions" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Situation? currentSituation;
+    private bool isLoading = true;
+    private bool isProcessing;
+
+    private bool HasChoices => currentSituation?.Choices?.Any() == true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!GameState.HasActiveSession)
+        {
+            Navigation.NavigateTo("/setup");
+            return;
+        }
+
+        await LoadSituationAsync();
+    }
+
+    private async Task LoadSituationAsync()
+    {
+        if (GameState.CurrentPlayer is null)
+        {
+            currentSituation = null;
+            return;
+        }
+
+        isLoading = true;
+        var situation = await GameService.GetCurrentSituationAsync(GameState.CurrentPlayer);
+        currentSituation = situation;
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleChoiceAsync(Choice choice)
+    {
+        if (GameState.CurrentPlayer is null || isProcessing)
+        {
+            return;
+        }
+
+        isProcessing = true;
+
+        try
+        {
+            var updatedPlayer = await GameService.TakeChoiceAsync(GameState.CurrentPlayer, choice.Id);
+            GameState.UpdatePlayer(updatedPlayer);
+
+            if (choice.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || updatedPlayer.CurrentSituationId == Guid.Empty)
+            {
+                Navigation.NavigateTo("/results");
+                return;
+            }
+
+            await LoadSituationAsync();
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private async Task ContinueAsync()
+    {
+        if (currentSituation?.Choices?.Count > 0)
+        {
+            await HandleChoiceAsync(currentSituation.Choices.First());
+        }
+        else
+        {
+            Navigation.NavigateTo("/results");
+        }
+    }
+
+    private void GoToResults()
+    {
+        Navigation.NavigateTo("/results");
+    }
+}
+

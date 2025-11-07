@@ -1,0 +1,81 @@
+@page "/results"
+@using Game.Models
+@using Game.Services
+@using Game.Components.Shared
+
+@inject GameState GameState
+@inject GameService GameService
+@inject NavigationManager Navigation
+
+<PageTitle>Értékelés</PageTitle>
+
+@if (!GameState.HasActiveSession || GameState.CurrentPlayer is null)
+{
+    <div class="alert alert-info">
+        Még nem fejezted be a játékot. <a href="/">Kezdj meg egyet!</a>
+    </div>
+}
+else
+{
+    <section class="mb-4">
+        <h1 class="mb-3">Szép munka, @DisplayName!</h1>
+        <p class="lead text-muted">Íme az értékelésed. Tartsd szemmel a rnaglistát, hogy lásd, hogyan teljesítettél a többiekhez képest!</p>
+    </section>
+
+    <div class="row gy-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Statok</h2>
+                    <PlayerStatsBar Stats="Player.Stats" />
+                    <div class="mt-3">
+                        <span class="badge bg-primary fs-6">Összpontszám: @Player.TotalScore</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Értékelés</h2>
+                    <p class="text-muted">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                        Fusce at est at nunc ultrices dapibus sit amet vel justo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3">
+        <button class="btn btn-outline-primary" @onclick="NavigateToLeaderboard">Rangsor</button>
+    </div>
+}
+
+@code {
+    private Player Player => GameState.CurrentPlayer!;
+
+    private string DisplayName => string.IsNullOrWhiteSpace(GameState.CurrentPlayer?.Username)
+        ? "Adventurer"
+        : GameState.CurrentPlayer!.Username!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!GameState.HasActiveSession || Player.CompletedAt is not null)
+        {
+            return;
+        }
+
+        await GameService.CompleteRunAsync(Player);
+        GameState.UpdatePlayer(Player);
+    }
+
+    private void Restart()
+    {
+        GameState.Clear();
+        Navigation.NavigateTo("/setup", true);
+    }
+
+    private void NavigateToLeaderboard() => Navigation.NavigateTo("/leaderboard");
+}
+

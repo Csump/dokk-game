@@ -12,6 +12,10 @@ public class Player
     public PlayerType Type { get; set; } = new();
     public List<DecisionLog> Decisions { get; set; } = new();
     public Guid CurrentSituationId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? CompletedAt { get; set; }
+
+    public int TotalScore => Stats.Total;
 
     public void TakeChoice(Choice choice)
     {

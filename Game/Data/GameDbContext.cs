@@ -17,6 +17,12 @@ public class GameDbContext : DbContext
         modelBuilder.Entity<Player>().OwnsOne(p => p.Type);
         modelBuilder.Entity<Player>().OwnsOne(c => c.Stats);
         modelBuilder.Entity<Choice>().OwnsOne(c => c.DeltaStats);
+
+        modelBuilder.Entity<Situation>()
+            .HasDiscriminator<string>("SituationType")
+            .HasValue<Decision>("Decision")
+            .HasValue<Conversation>("Conversation")
+            .HasValue<Info>("Info");
     }
 
 }

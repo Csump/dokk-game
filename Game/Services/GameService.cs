@@ -1,6 +1,7 @@
 ﻿using Game.Data;
 using Game.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Game.Services;
 
@@ -15,6 +16,8 @@ public class GameService
 
     public async Task<Player> CreatePlayerAsync(string username, Level level, Gender gender, Age age)
     {
+        username = username?.Trim() ?? string.Empty;
+
         var player = new Player
         {
             Username = username,
@@ -35,7 +38,7 @@ public class GameService
             .FirstOrDefaultAsync(s => s.Id == player.CurrentSituationId);
     }
 
-    public async Task<Player> TakeChoiceAsync(Player player, int choiceId)
+    public async Task<Player> TakeChoiceAsync(Player player, Guid choiceId)
     {
         var choice = await _context.Choices.FindAsync(choiceId);
         if (choice == null) return player;
@@ -44,5 +47,27 @@ public class GameService
         _context.Update(player);
         await _context.SaveChangesAsync();
         return player;
+    }
+
+    public async Task CompleteRunAsync(Player player)
+    {
+        player.CompletedAt = DateTime.UtcNow;
+        _context.Update(player);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Player>> GetLeaderboardAsync()
+    {
+        var completedRuns = await _context.Players
+            .Where(p => !string.IsNullOrWhiteSpace(p.Username) && p.CompletedAt != null)
+            .Include(p => p.Decisions)
+            .ToListAsync();
+
+        return completedRuns
+            .GroupBy(p => p.Username!, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.OrderByDescending(p => p.CompletedAt).First())
+            .OrderByDescending(p => p.TotalScore)
+            .ThenByDescending(p => p.CompletedAt)
+            .ToList();
     }
 }

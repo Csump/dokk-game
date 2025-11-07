@@ -1,16 +1,9 @@
 ﻿namespace Game.Models;
 
-public class Decision : Situation
-{
-    public string IllustrationUrl { get; set; } = "";
-}
+public class Decision : Situation { }
 
-public class Conversation : Situation
-{
-    public string IllustrationUrl { get; set; } = "";
-}
+public class Conversation : Situation { }
 
-public class Info : Situation
-{
-    public string IllustrationUrl { get; set; } = "";
-}
+public class Info : Situation { }
+
+public class Minigame : Situation { }

@@ -1,0 +1,29 @@
+@using Game.Models
+
+<article class="situation-card card shadow-sm">
+    <div class="card-body">
+        <header class="mb-3">
+            <h2 class="h4 mb-1">@Situation.Title</h2>
+            @if (!string.IsNullOrWhiteSpace(Situation.IllustrationUrl))
+            {
+                <img src="@Situation.IllustrationUrl" alt="@Situation.Title illustration" class="img-fluid rounded situation-card__image" />
+            }
+        </header>
+        <p class="lead">@Situation.Text</p>
+        @if (BodyContent is not null)
+        {
+            <div class="mt-4">
+                @BodyContent
+            </div>
+        }
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public Situation Situation { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? BodyContent { get; set; }
+}
+

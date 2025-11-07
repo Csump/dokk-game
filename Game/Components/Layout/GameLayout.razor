@@ -1,0 +1,61 @@
+@inherits LayoutComponentBase
+@using Game.Services
+@using Game.Components.Shared
+@implements IDisposable
+
+@inject GameState GameState
+@inject NavigationManager Navigation
+
+<div class="game-layout d-flex flex-column min-vh-100">
+    <header class="bg-dark text-white shadow-sm">
+        <div class="container py-3 d-flex flex-wrap align-items-center justify-content-between">
+            <a class="navbar-brand text-white fw-semibold" href="/">HEDGIE</a>
+            <nav class="nav gap-3">
+                <a class="nav-link text-white" href="/">Kezdőoldal</a>
+                <a class="nav-link text-white" href="/leaderboard">Rangsor</a>
+            </nav>
+            @if (GameState.HasActiveSession)
+            {
+                <button class="btn btn-outline-light" @onclick="NavigateToResults">Eredmények</button>
+            }
+        </div>
+    </header>
+
+    @if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
+    {
+        <div class="bg-light border-bottom">
+            <div class="container py-3">
+                <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
+            </div>
+        </div>
+    }
+
+    <main class="flex-grow-1">
+        <div class="container py-4">
+            @Body
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-3 mt-auto">
+        <div class="container text-center small">
+            <span>&copy;@DateTime.Now.Year HEDGIE. Minden jog fenntartva.</span>
+        </div>
+    </footer>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        GameState.Changed += OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged() => InvokeAsync(StateHasChanged);
+
+    private void NavigateToResults() => Navigation.NavigateTo("/results");
+
+    public void Dispose()
+    {
+        GameState.Changed -= OnGameStateChanged;
+    }
+}
+

@@ -1,0 +1,130 @@
+@page "/setup"
+@using System.ComponentModel.DataAnnotations
+@using System.Collections.Generic
+@using System.Text.RegularExpressions
+@using Game.Models
+@using Game.Services
+@using Game.Components.Shared
+
+@inject GameService GameService
+@inject GameState GameState
+@inject NavigationManager Navigation
+
+<PageTitle>Karakterválasztás</PageTitle>
+
+<h1 class="mb-4">A nagy karakterválasztás</h1>
+
+<EditForm Model="model" OnValidSubmit="HandleValidSubmit" FormName="character-setup">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row gy-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Alapok</h2>
+
+                    <div class="mb-3">
+                        <label class="form-label">Felhasználónév</label>
+                        <InputText class="form-control" @bind-Value="model.Username" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tapasztalati szint</label>
+                        <InputSelect class="form-select" @bind-Value="model.Level">
+                            @foreach (var level in Enum.GetValues<Level>())
+                            {
+                                <option value="@level">@FormatEnum(level)</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Statok</h2>
+                    <p class="text-muted">Ezek az értékek döntéseid alapján módosulni fognak a játék során.</p>
+                    <PlayerStatsBar Stats="@PreviewStats" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end gap-3">
+        <button class="btn btn-primary" type="submit" disabled="@isSubmitting">
+            @if (isSubmitting)
+            {
+                <span class="spinner-border spinner-border-sm" role="status"></span>
+                <span class="ms-2">Készülj a kalandra...</span>
+            }
+            else
+            {
+                <span>Indulhat a játék!</span>
+            }
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    private readonly CharacterSetupModel model = new();
+    private bool isSubmitting;
+    private static readonly Regex SplitRegex = new("(?<=.)(?=[A-Z])");
+
+    private Stats PreviewStats => Stats.GetDefault(model.Level, model.Gender, model.Age);
+
+    private async Task HandleValidSubmit()
+    {
+        if (isSubmitting)
+        {
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            var player = await GameService.CreatePlayerAsync(model.Username?.Trim() ?? string.Empty, model.Level, model.Gender, model.Age);
+            GameState.SetPlayer(player);
+            Navigation.NavigateTo("/play");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        model.Reset();
+        StateHasChanged();
+    }
+
+    private static string FormatEnum<T>(T value) where T : Enum => string.Join(' ', SplitRegex.Split(value.ToString()));
+
+    private class CharacterSetupModel
+    {
+        [StringLength(32, ErrorMessage = "Please keep your username under 32 characters.")]
+        public string? Username { get; set; }
+
+        [Required]
+        public Gender Gender { get; set; } = Gender.Male;
+
+        [Required]
+        public Age Age { get; set; } = Age.Young;
+
+        [Required]
+        public Level Level { get; set; } = Level.Student;
+
+        public void Reset()
+        {
+            Username = string.Empty;
+            Gender = Gender.Male;
+            Age = Age.Young;
+            Level = Level.Student;
+        }
+    }
+}
+

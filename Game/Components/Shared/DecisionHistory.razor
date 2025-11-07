@@ -1,0 +1,24 @@
+@using Game.Models
+
+@if (Decisions?.Any() == true)
+{
+    <ul class="decision-history list-group">
+        @foreach (var decision in Decisions.OrderByDescending(d => d.TakenAt))
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Choice @decision.ChoiceId</span>
+                <small class="text-muted">@decision.TakenAt.ToLocalTime().ToString("g")</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted">Decisions you make will appear here.</p>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<DecisionLog>? Decisions { get; set; }
+}
+

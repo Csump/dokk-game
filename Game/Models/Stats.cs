@@ -4,13 +4,14 @@ public class Stats
 {
     private const int MAX_LEVEL = 100;
     private const int MIN_LEVEL = 0;
-    private int Energy { get; set; }
-    private int Motivation { get; set; }
-    private int Confidence { get; set; }
-    private int Proactivity { get; set; }
-    private int Cooperation { get; set; }
-    private int Preparedness { get; set; }
-    private int Creativity { get; set; }
+
+    public int Energy { get; private set; }
+    public int Motivation { get; private set; }
+    public int Confidence { get; private set; }
+    public int Proactivity { get; private set; }
+    public int Cooperation { get; private set; }
+    public int Preparedness { get; private set; }
+    public int Creativity { get; private set; }
 
     public Stats(int energy = 50, int motivation = 50, int confidence = 50,
         int proactivity = 50, int cooperation = 50,
@@ -29,12 +30,13 @@ public class Stats
     
     public static Stats GetDefault(Level level, Gender gender, Age age)
     {
-        // TODO adjust
         int baseVal = level switch
         {
-            Level.Junior => 40,
-            Level.Medior => 60,
-            Level.Senior => 70,
+            Level.Student => 40,
+            Level.Graduate => 55,
+            Level.Professional => 65,
+            Level.Doctor => 70,
+            Level.Professor => 75,
             _ => 50
         };
 
@@ -51,6 +53,19 @@ public class Stats
         Preparedness = Clamp(Preparedness + delta.Preparedness);
         Creativity = Clamp(Creativity + delta.Creativity);
     }
+
+    public int Total => Energy + Motivation + Confidence + Proactivity + Cooperation + Preparedness + Creativity;
+
+    public IReadOnlyDictionary<string, int> AsDictionary() => new Dictionary<string, int>
+    {
+        ["Energy"] = Energy,
+        ["Motivation"] = Motivation,
+        ["Confidence"] = Confidence,
+        ["Proactivity"] = Proactivity,
+        ["Cooperation"] = Cooperation,
+        ["Preparedness"] = Preparedness,
+        ["Creativity"] = Creativity
+    };
 
     private int Clamp(int value) => Math.Clamp(value, MIN_LEVEL, MAX_LEVEL);
 }

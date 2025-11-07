@@ -11,6 +11,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseInMemoryDatabase("GameDb"));
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<GameState>();
 
 var app = builder.Build();
 
