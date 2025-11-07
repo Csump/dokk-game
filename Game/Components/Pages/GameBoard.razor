@@ -1,7 +1,9 @@
 @page "/play"
+@rendermode InteractiveServer
 @using Game.Models
 @using Game.Services
 @using Game.Components.Shared
+@using Microsoft.AspNetCore.WebUtilities
 
 @inject GameState GameState
 @inject GameService GameService
@@ -9,7 +11,7 @@
 
 <PageTitle>Gameplay</PageTitle>
 
-@if (!GameState.HasActiveSession)
+@if (player is null)
 {
     <div class="alert alert-info">
         You don’t have an active game right now. <a href="/setup">Create a character</a> to get started.
@@ -54,9 +56,9 @@ else
                 <div class="card-body">
                     <h2 class="h5 d-flex justify-content-between align-items-center">
                         <span>Decision history</span>
-                        <span class="badge bg-secondary">@GameState.CurrentPlayer?.Decisions.Count</span>
+                        <span class="badge bg-secondary">@player.Decisions.Count</span>
                     </h2>
-                    <DecisionHistory Decisions="GameState.CurrentPlayer?.Decisions" />
+                    <DecisionHistory Decisions="player.Decisions" />
                 </div>
             </div>
         </div>
@@ -64,6 +66,7 @@ else
 }
 
 @code {
+    private Player? player;
     private Situation? currentSituation;
     private bool isLoading = true;
     private bool isProcessing;
@@ -72,25 +75,41 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (!GameState.HasActiveSession)
+        await EnsurePlayerAsync();
+        if (player is not null)
         {
-            Navigation.NavigateTo("/setup");
+            await LoadSituationAsync();
+        }
+    }
+
+    private async Task EnsurePlayerAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("playerId", out var playerIdValue) || !Guid.TryParse(playerIdValue, out var playerId))
+        {
+            Navigation.NavigateTo("/setup", true);
             return;
         }
 
-        await LoadSituationAsync();
+        player = await GameService.GetPlayerAsync(playerId);
+        if (player is null)
+        {
+            Navigation.NavigateTo("/setup", true);
+            return;
+        }
+
+        GameState.SetPlayer(player);
     }
 
     private async Task LoadSituationAsync()
     {
-        if (GameState.CurrentPlayer is null)
+        if (player is null)
         {
-            currentSituation = null;
             return;
         }
 
         isLoading = true;
-        var situation = await GameService.GetCurrentSituationAsync(GameState.CurrentPlayer);
+        var situation = await GameService.GetCurrentSituationAsync(player);
         currentSituation = situation;
         isLoading = false;
         await InvokeAsync(StateHasChanged);
@@ -98,7 +117,7 @@ else
 
     private async Task HandleChoiceAsync(Choice choice)
     {
-        if (GameState.CurrentPlayer is null || isProcessing)
+        if (player is null || isProcessing)
         {
             return;
         }
@@ -107,12 +126,12 @@ else
 
         try
         {
-            var updatedPlayer = await GameService.TakeChoiceAsync(GameState.CurrentPlayer, choice.Id);
-            GameState.UpdatePlayer(updatedPlayer);
+            player = await GameService.TakeChoiceAsync(player, choice.Id);
+            GameState.UpdatePlayer(player);
 
-            if (choice.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || updatedPlayer.CurrentSituationId == Guid.Empty)
+            if (choice.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || player.CurrentSituationId == Guid.Empty)
             {
-                Navigation.NavigateTo("/results");
+                Navigation.NavigateTo($"/results?playerId={player.Id}");
                 return;
             }
 
@@ -132,13 +151,19 @@ else
         }
         else
         {
-            Navigation.NavigateTo("/results");
+            if (player is not null)
+            {
+                Navigation.NavigateTo($"/results?playerId={player.Id}");
+            }
         }
     }
 
     private void GoToResults()
     {
-        Navigation.NavigateTo("/results");
+        if (player is not null)
+        {
+            Navigation.NavigateTo($"/results?playerId={player.Id}");
+        }
     }
 }
 

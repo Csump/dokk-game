@@ -1,7 +1,9 @@
 @page "/results"
+@rendermode InteractiveServer
 @using Game.Models
 @using Game.Services
 @using Game.Components.Shared
+@using Microsoft.AspNetCore.WebUtilities
 
 @inject GameState GameState
 @inject GameService GameService
@@ -9,7 +11,7 @@
 
 <PageTitle>Értékelés</PageTitle>
 
-@if (!GameState.HasActiveSession || GameState.CurrentPlayer is null)
+@if (player is null)
 {
     <div class="alert alert-info">
         Még nem fejezted be a játékot. <a href="/">Kezdj meg egyet!</a>
@@ -53,21 +55,27 @@ else
 }
 
 @code {
-    private Player Player => GameState.CurrentPlayer!;
+    private Player? player;
 
-    private string DisplayName => string.IsNullOrWhiteSpace(GameState.CurrentPlayer?.Username)
+    private Player Player => player!;
+
+    private string DisplayName => string.IsNullOrWhiteSpace(Player.Username)
         ? "Adventurer"
-        : GameState.CurrentPlayer!.Username!;
+        : Player.Username!;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!GameState.HasActiveSession || Player.CompletedAt is not null)
+        await EnsurePlayerAsync();
+        if (player is null)
         {
             return;
         }
 
-        await GameService.CompleteRunAsync(Player);
-        GameState.UpdatePlayer(Player);
+        if (Player.CompletedAt is null)
+        {
+            await GameService.CompleteRunAsync(Player);
+            GameState.UpdatePlayer(Player);
+        }
     }
 
     private void Restart()
@@ -77,5 +85,20 @@ else
     }
 
     private void NavigateToLeaderboard() => Navigation.NavigateTo("/leaderboard");
+
+    private async Task EnsurePlayerAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("playerId", out var playerIdValue) || !Guid.TryParse(playerIdValue, out var playerId))
+        {
+            return;
+        }
+
+        player = await GameService.GetPlayerAsync(playerId);
+        if (player is not null)
+        {
+            GameState.SetPlayer(player);
+        }
+    }
 }
 

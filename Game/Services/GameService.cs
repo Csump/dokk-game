@@ -31,6 +31,15 @@ public class GameService
         return player;
     }
 
+    public async Task<Player?> GetPlayerAsync(Guid playerId)
+    {
+        return await _context.Players
+            .Include(p => p.Decisions)
+            .Include(p => p.Stats)
+            .Include(p => p.Type)
+            .FirstOrDefaultAsync(p => p.Id == playerId);
+    }
+
     public async Task<Situation?> GetCurrentSituationAsync(Player player)
     {
         return await _context.Situations
