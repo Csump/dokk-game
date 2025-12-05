@@ -11,103 +11,124 @@
 @inject GameState GameState
 @inject NavigationManager Navigation
 
-<PageTitle>Karakterválasztás</PageTitle>
+<PageTitle>HEDGIE Karakterválasztás</PageTitle>
 
-<h1 class="mb-4">A nagy karakterválasztás</h1>
-
-<EditForm Model="model" OnValidSubmit="HandleValidSubmit" FormName="character-setup">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="row gy-4">
-        <div class="col-lg-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="h5 mb-3">Alapok</h2>
-
-                    <div class="mb-3">
-                        <label class="form-label">Felhasználónév</label>
-                        <InputText class="form-control" @bind-Value="model.Username" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Tapasztalati szint</label>
-                        <InputSelect class="form-select" @bind-Value="model.Level">
-                            @foreach (var level in Enum.GetValues<Level>())
-                            {
-                                <option value="@level">@FormatEnum(level)</option>
-                            }
-                        </InputSelect>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5 mb-3">Statok</h2>
-                    <p class="text-muted">Ezek az értékek döntéseid alapján módosulni fognak a játék során.</p>
-                    <PlayerStatsBar Stats="@PreviewStats" />
-                </div>
-            </div>
+<div class="main-container @($"bg-{CurrentCharacter.Color}")">
+    <div class="upper-wrapper">
+        <h1>Karakterválasztás</h1>
+        <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
+        
+        <div class="level-selector">
+            @foreach (var level in Enum.GetValues<Level>())
+            {
+                <button type="button"
+                        class="level-button @(_model.Level == level ? "active" : "")"
+                        @onclick="() => _model.Level = level">
+                    @FormatEnum(level)
+                </button>
+            }
         </div>
     </div>
 
-    <div class="mt-4 d-flex justify-content-end gap-3">
-        <button class="btn btn-primary" type="submit" disabled="@isSubmitting">
-            @if (isSubmitting)
-            {
-                <span class="spinner-border spinner-border-sm" role="status"></span>
-                <span class="ms-2">Készülj a kalandra...</span>
-            }
-            else
-            {
-                <span>Indulhat a játék!</span>
-            }
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit" FormName="character-setup">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="character-info">
+            <div class="character-title">
+                <p class="character-name">@CurrentCharacter.Name</p>
+                <p class="character-quote">„@CurrentCharacter.Quote”</p>
+            </div>
+            
+            <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
+        </div>
+        
+        <button type="button" class="arrow-button left" @onclick="PrevCharacter">
+            ←
         </button>
-    </div>
-</EditForm>
+        
+        <div class="character-shine"/>
+
+        <img class="character-image" src="@CurrentCharacter.ImageUrl" alt="Karakterillusztráció" />
+
+        <button type="button" class="arrow-button right" @onclick="NextCharacter">
+            →
+        </button>
+        
+        <div class="stat-bar">
+            <PlayerStatsBar Stats="@PreviewStats" />
+        </div>
+
+        <div class="continue-wrapper">
+            <button type="submit" disabled="@_isSubmitting"><div class="shine"/>
+                @if (_isSubmitting)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    <span class="ms-2">Készülj a kalandra...</span>
+                }
+                else
+                {
+                    <span>Tovább →</span>
+                }
+            </button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
-    private readonly CharacterSetupModel model = new();
-    private bool isSubmitting;
-    private static readonly Regex SplitRegex = new("(?<=.)(?=[A-Z])");
+    private readonly CharacterSetupModel _model = new();
+    private bool _isSubmitting;
+    
+    private int CurrentIndex { get; set; } = 0;
+    private CharacterData CurrentCharacter => Characters[CurrentIndex];
+    private Stats PreviewStats => Stats.GetDefault(_model.Level, CurrentCharacter.Gender, CurrentCharacter.Age);
+    
+    private void PrevCharacter()
+    {
+        CurrentIndex = (CurrentIndex - 1 + Characters.Count) % Characters.Count;
+        _model.Gender = CurrentCharacter.Gender;
+        _model.Age = CurrentCharacter.Age;
+        StateHasChanged();
+    }
 
-    private Stats PreviewStats => Stats.GetDefault(model.Level, model.Gender, model.Age);
+    private void NextCharacter()
+    {
+        CurrentIndex = (CurrentIndex + 1) % Characters.Count;
+        _model.Gender = CurrentCharacter.Gender;
+        _model.Age = CurrentCharacter.Age;
+        StateHasChanged();
+    }
 
     private async Task HandleValidSubmit()
     {
-        if (isSubmitting)
-        {
-            return;
-        }
+        if (_isSubmitting) return;
 
-        isSubmitting = true;
-
+        _isSubmitting = true;
+        
         try
         {
-            var player = await GameService.CreatePlayerAsync(model.Username?.Trim() ?? string.Empty, model.Level, model.Gender, model.Age);
+            var player = await GameService.CreatePlayerAsync(
+                _model.Username ?? string.Empty,
+                _model.Level,
+                CurrentCharacter.Gender,
+                CurrentCharacter.Age
+            );
+
             GameState.SetPlayer(player);
             Navigation.NavigateTo($"/play?playerId={player.Id}", true);
         }
         finally
         {
-            isSubmitting = false;
+            _isSubmitting = false;
         }
     }
-
-    private void ResetForm()
-    {
-        model.Reset();
-        StateHasChanged();
-    }
-
-    private static string FormatEnum<T>(T value) where T : Enum => string.Join(' ', SplitRegex.Split(value.ToString()));
+    
+    private static string FormatEnum(Enum e)
+        => string.Join(' ', Regex.Split(e.ToString(), "(?<=.)(?=[A-Z])"));
 
     private class CharacterSetupModel
     {
-        [StringLength(32, ErrorMessage = "Please keep your username under 32 characters.")]
+        [StringLength(32, ErrorMessage = "A felhasználóneved legfeljebb 32 karakter lehet.")]
         public string? Username { get; set; }
 
         [Required]
@@ -129,3 +150,52 @@
     }
 }
 
+@code
+{
+    private class CharacterData
+    {
+        public required Gender Gender { get; set; }
+        public required Age Age { get; set; }
+        public required string Name { get; set; }
+        public required string Quote { get; set; }
+        public required string Description { get; set; }
+        public required string ImageUrl { get; set; }
+        public required string Color { get; set; }
+    }
+    
+    private readonly List<CharacterData> Characters = new()
+    {
+        new CharacterData {
+            Gender = Gender.Male, Age = Age.Young,
+            Name = "Máté",
+            Quote = "Másképp fogom csinálni, mint a professzoraim!",
+            Description = "A doktori kutatásában éppen az első adatfelvételeket szervezi, a témavezetőjével egy közös publikáción dolgoznak, ezen túl pedig a megélhetés érdekében további munkákat is vállal. Szereti a pörgést, társaságkedvelő ember, aki jól tudja beosztani az idejét.\nEzen az egyetemen végzett, és már a doktori jelentkezésnél megfogadta, hogy ha felveszik és tanítani fog, akkor megreformálja az oktatást, kiaknázza, hogy otthonosan mozog a digitális térben, és figyel majd a hallgatói igényekre. Először főleg online platformok kialakításában, szervezésében segített, majd hirtelen két önálló kurzust is kapott, ahova igyekszik a vitát bevinni az órákra, online csoportos feladatokat ad, de a hallgatók sokszor nem értik a feladatokat vagy nem csinálják meg. Ez eléggé elbizonytalanítja, hogy jó úton jár-e.",
+            ImageUrl = "/src/Characters/large-char-young-male.png",
+            Color = "gold"
+        },
+        new CharacterData {
+            Gender = Gender.Female, Age = Age.Old,
+            Name = "Gabriella",
+            Quote = "Nekem a tanítás okoz igazi örömet!",
+            Description = "Az oktatási és kutatási sikerei miatt témavezetője terelte a doktori képzésbe. Több cikke is megjelent, de inkább a fejlesztések vonzották és folyamatosan új módszereket próbált ki az egyetemi oktatása során. Az utóbbi években elbizonytalanodott munkája értékében, mert az egyetemen az oktatás minősége teljesen háttérbe szorult a kutatói teljesítményekhez képest.\nA hallgatók nagyon tisztelik és kedvelik közvetlensége és segítőkészsége miatt. Minden évben új módszerekkel tanít, ezeket szívesen megosztja kollégáival, gyakran ő tanítja meg a legújabb digitális eszközök használatára munkatársait. Csapatjátékos, ezért is gondolnak rá minden újonnan induló oktatási fejlesztés, projekt esetén.",
+            ImageUrl = "/src/Characters/large-char-old-female.png",
+            Color = "olive"
+        },
+        new CharacterData {
+            Gender = Gender.Male, Age = Age.Old,
+            Name = "Iván",
+            Quote = "Örök idealista.",
+            Description = "A PhD után piaci cégeknél dolgozott külföldön. Már elmúlt 37, amikor az egyetemre került. A kollégákkal jól kijön, sokat tanult tőlük, csakúgy, mint hallgatóitól. Szeret kísérletezni a tanításban. Mivel jól ismeri az egyetemen kívüli világot, azt is jól látja, hogy a mai cégek milyen típusú kompetenciákat várnak el, és hogy sajnos az egyetem ezzel nem tud igazán lépést tartani. Ezért is kezdett egyre több RDI projektet behozni, majd egy nemzetközi oktatásfejlesztési projektbe is belevágott, mivel adódott egy jó pályázati lehetőség.\nSzeret másoktól tanulni és szerinte az igazi oktató és kutató élvezi a tanulást és másokat is erre sarkall. Reméli, hogy a mostani csapat támogatni fogja, mert a kollégái gyakran ugratják azzal, hogy ő az örök idealista, álmodozó.",
+            ImageUrl = "/src/Characters/large-char-old-male.png",
+            Color = "rose"
+        },
+        new CharacterData {
+            Gender = Gender.Female, Age = Age.Young,
+            Name = "Zsófia",
+            Quote = "Szeretek itt dolgozni, megbecsülik a munkám.",
+            Description = "Vidéken, kisvárosban született, ő az első diplomás a családban. A középiskoában jó tanuló volt, az érettségi után a fővárosba költözött, és másodszorra felvételt nyert az egyetemre is, ami nagyon tetszett neki. A kollégiumi élet nagy változást jelentett számára, kinyílt előtte a világ. A tanulás mellett viszont folyamatosan dolgozott különböző állásokban, többnyire nem a szakterületéhez kötődően.\nJól beszél angolul, ezért a doktori képzés alatt egy multinacionális cégnél helyezkedett el. Két éve dolgozik itt az egyetemen. Nehezebben barátkozik, de már elég jól ismeri a kari közösséget, viszont a csapatban dolgozás továbbra sem az erőssége. Kevés felsőoktatási tapasztalata miatt gyakran érzi bizonytalannak magát.  Szorgalmas, precíz munkaerő, nagy munkabírással.",
+            ImageUrl = "/src/Characters/large-char-young-female.png",
+            Color = "viridian"
+        }
+    };
+}

@@ -6,42 +6,21 @@
 @inject GameState GameState
 @inject NavigationManager Navigation
 
-<div class="game-layout d-flex flex-column min-vh-100">
-    <header class="bg-dark text-white shadow-sm">
-        <div class="container py-3 d-flex flex-wrap align-items-center justify-content-between">
-            <a class="navbar-brand text-white fw-semibold" href="/">HEDGIE</a>
-            <nav class="nav gap-3">
-                <a class="nav-link text-white" href="/">Kezdőoldal</a>
-                <a class="nav-link text-white" href="/leaderboard">Rangsor</a>
-            </nav>
-            @if (GameState.HasActiveSession)
-            {
-                <button class="btn btn-outline-light" @onclick="NavigateToResults">Eredmények</button>
-            }
-        </div>
-    </header>
+<a href="https://www.dokk.elte.hu/" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   style="position:absolute; top:22px; left:26px; z-index: 999;">
+    <img id="main-logo-button" src="src/Assets/logo.svg" alt="ELTE DOKK logo" />
+</a>
 
-    @if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
-    {
-        <div class="bg-light border-bottom">
-            <div class="container py-3">
-                <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
-            </div>
-        </div>
-    }
+@if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
+{
+    <div class="stat-bar">
+        <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
+    </div>
+}
 
-    <main class="flex-grow-1">
-        <div class="container py-4">
-            @Body
-        </div>
-    </main>
-
-    <footer class="bg-dark text-white py-3 mt-auto">
-        <div class="container text-center small">
-            <span>&copy;@DateTime.Now.Year HEDGIE. Minden jog fenntartva.</span>
-        </div>
-    </footer>
-</div>
+@Body
 
 @code {
     protected override void OnInitialized()
@@ -50,8 +29,6 @@
     }
 
     private void OnGameStateChanged() => InvokeAsync(StateHasChanged);
-
-    private void NavigateToResults() => Navigation.NavigateTo("/results");
 
     public void Dispose()
     {
