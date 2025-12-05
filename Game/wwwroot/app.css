@@ -1,8 +1,128 @@
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+html, body, .main-container {
+    font-family: 'Hanken Grotesk', Helvetica, Arial, sans-serif;
+    color: var(--powder-50);
+    width: 100%;
+    height: 100%;
+    background-color: var(--powder-900);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    outline: none;
 }
 
-a, .btn-link {
+h1:focus {
+    outline: none;
+}
+
+#main-logo-button {
+    height: 55px;
+    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03)) 
+            drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02)) 
+            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
+
+    transition: transform 0.25s cubic-bezier(0.34, 2, 0.64, 2),
+                filter 0.25s cubic-bezier(0.34, 2, 0.64, 2);
+}
+
+#main-logo-button:hover {
+    filter: drop-shadow(0px 0px 7px rgba(255, 255, 255, 0.07))
+            drop-shadow(0px 0px 12px rgba(255, 255, 255, 0.05))
+            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.03));
+    transform: scale(105%);
+}
+
+#main-logo-button:active {
+    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03))
+            drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02))
+            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
+    transform: scale(97%);
+}
+
+button {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 11px 15px;
+    gap: 8px;
+    isolation: isolate;
+    z-index: 100;
+    
+    height: 42px;
+    overflow: hidden;
+
+    background: linear-gradient(180deg, var(--powder-900) 0%, var(--powder-700) 100%);
+    border-width: 1px 1px 3px 1px;
+    border-style: solid;
+    border-color: var(--powder-50);
+    box-shadow: 0 -1px 2px rgba(255, 255, 255, 0.15),
+                0 -2px 15px rgba(255, 255, 255, 0.07),
+                0 -5px 50px rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    
+    transition: all 0.25s cubic-bezier(0.34, 2, 0.64, 2);
+
+    /* Label */
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 100%;
+    color: var(--powder-50);
+}
+
+button:hover {
+    background: linear-gradient(180deg, var(--powder-800) 0%, var(--powder-600) 100%);
+    transform: scale(1.02);
+    box-shadow: 0 -1px 2px rgba(255, 255, 255, 0.19),
+                0 -2px 15px rgba(255, 255, 255, 0.1),
+                0 -5px 50px rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+button:active {
+    background: linear-gradient(180deg, var(--powder-900) 0%, var(--powder-700) 100%);
+    transform: scale(0.99);
+}
+
+.shine {
+    position: absolute;
+    display: block;
+    width: 29px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translate(12px, 0) rotate(12deg);
+    z-index: 3;
+
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0), rgb(255, 255, 255));
+    mix-blend-mode: plus-lighter;
+    opacity: 0.1;
+}
+
+h1 {
+    font-weight: 900;
+    font-size: 3rem;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-weight: 800;
+    font-size: 1.8rem;
+    letter-spacing: -0.02em;
+}
+
+h3 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+/*a, .btn-link {
     color: #006bb7;
 }
 
@@ -18,10 +138,6 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
-}
-
-h1:focus {
-    outline: none;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -108,4 +224,4 @@ h1:focus {
 .decision-history {
     max-height: 340px;
     overflow-y: auto;
-}
+}*/
