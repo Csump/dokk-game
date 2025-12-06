@@ -22,7 +22,7 @@
             @foreach (var level in Enum.GetValues<Level>())
             {
                 <button type="button"
-                        class="level-button @(_model.Level == level ? "active" : "")"
+                        class="@(_model.Level == level ? "fancy-dark" : "")"
                         @onclick="() => _model.Level = level">
                     @FormatEnum(level)
                 </button>
@@ -43,7 +43,7 @@
             <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
         </div>
         
-        <button type="button" class="arrow-button left" @onclick="PrevCharacter">
+        <button type="button" class="fancy-light arrow-button left" @onclick="PrevCharacter">
             ←
         </button>
         
@@ -51,16 +51,14 @@
 
         <img class="character-image" src="@CurrentCharacter.ImageUrl" alt="Karakterillusztráció" />
 
-        <button type="button" class="arrow-button right" @onclick="NextCharacter">
+        <button type="button" class="fancy-light arrow-button right" @onclick="NextCharacter">
             →
         </button>
         
-        <div class="stat-bar">
-            <PlayerStatsBar Stats="@PreviewStats" />
-        </div>
+        <PlayerStatsBar Stats="@PreviewStats" />
 
         <div class="continue-wrapper">
-            <button type="submit" disabled="@_isSubmitting"><div class="shine"/>
+            <button class="fancy-light" type="submit" disabled="@_isSubmitting"><div class="shine"/>
                 @if (_isSubmitting)
                 {
                     <span class="spinner-border spinner-border-sm" role="status"></span>
@@ -138,14 +136,14 @@
         public Age Age { get; set; } = Age.Young;
 
         [Required]
-        public Level Level { get; set; } = Level.Student;
+        public Level Level { get; set; } = Level.Doktorandusz;
 
         public void Reset()
         {
             Username = string.Empty;
             Gender = Gender.Male;
             Age = Age.Young;
-            Level = Level.Student;
+            Level = Level.Doktorandusz;
         }
     }
 }

@@ -19,7 +19,7 @@ public static class SeedData
             SituationId = s1.Id,
             Text = "Walk forward",
             NextSituationId = s2.Id,
-            DeltaStats = new Stats(energy: -5, motivation: +5)
+            DeltaStats = new Stats(energy: -5, success: +5)
         };
 
         var c2 = new Choice
@@ -28,7 +28,7 @@ public static class SeedData
             SituationId = s2.Id,
             Text = "Take the left path",
             NextSituationId = s3.Id,
-            DeltaStats = new Stats(energy: -10, confidence: +10)
+            DeltaStats = new Stats(energy: -10, selfreflection: +10)
         };
 
         s1.Choices.Add(c1);

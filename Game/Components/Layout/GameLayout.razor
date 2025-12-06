@@ -15,9 +15,7 @@
 
 @if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
 {
-    <div class="stat-bar">
-        <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
-    </div>
+    <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
 }
 
 @Body

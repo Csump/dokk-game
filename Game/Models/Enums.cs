@@ -14,9 +14,7 @@ public enum Age
 
 public enum Level
 {
-    Student,
-    Graduate,
-    Professional,
-    Doctor,
-    Professor
+    Doktorandusz,
+    Docens,
+    Adjunktus
 }

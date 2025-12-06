@@ -1,0 +1,80 @@
+﻿button {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 11px 15px;
+    gap: 8px;
+
+    background: transparent;
+    border: none;
+
+    isolation: isolate;
+    z-index: 100;
+    height: 42px;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: all 0.25s cubic-bezier(0.34, 2, 0.64, 2);
+
+    /* Label */
+    font-family: 'Hanken Grotesk', Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 100%;
+    color: var(--powder-50);
+}
+
+    button:hover {
+        background: rgb(248, 250, 249, 0.05);
+        transform: scale(1.02);
+        cursor: pointer;
+    }
+
+    button:active {
+        transform: scale(0.99);
+    }
+
+.fancy-dark {
+    background: linear-gradient(180deg, var(--powder-800) 0%, var(--powder-700) 100%);
+    border-width: 1px 1px 3px 1px;
+    border-style: solid;
+    border-color: var(--powder-900);
+    box-shadow: 0 -2px 15px rgba(255, 255, 255, 0.03), 0 -5px 50px rgba(255, 255, 255, 0.02);
+}
+
+    .fancy-dark:hover {
+        background: linear-gradient(180deg, var(--powder-800) 0%, var(--powder-600) 100%);
+        box-shadow: 0 -2px 15px rgba(255, 255, 255, 0.05), 0 -5px 50px rgba(255, 255, 255, 0.03);
+    }
+
+.fancy-light {
+    background: linear-gradient(180deg, var(--powder-900) 0%, var(--powder-700) 100%);
+    border-width: 1px 1px 3px 1px;
+    border-style: solid;
+    border-color: var(--powder-50);
+    box-shadow: 0 -1px 2px rgba(255, 255, 255, 0.15), 0 -2px 15px rgba(255, 255, 255, 0.07), 0 -5px 50px rgba(255, 255, 255, 0.03);
+}
+
+    .fancy-light:hover {
+        background: linear-gradient(180deg, var(--powder-800) 0%, var(--powder-600) 100%);
+        box-shadow: 0 -1px 2px rgba(255, 255, 255, 0.19), 0 -2px 15px rgba(255, 255, 255, 0.1), 0 -5px 50px rgba(255, 255, 255, 0.05);
+    }
+
+.shine {
+    position: absolute;
+    display: block;
+    width: 29px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translate(12px, 0) rotate(12deg);
+    z-index: 3;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0), rgb(255, 255, 255));
+    mix-blend-mode: plus-lighter;
+    opacity: 0.1;
+}

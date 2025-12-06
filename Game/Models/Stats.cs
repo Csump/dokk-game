@@ -6,24 +6,24 @@ public class Stats
     private const int MIN_LEVEL = 0;
 
     public int Energy { get; private set; }
-    public int Motivation { get; private set; }
-    public int Confidence { get; private set; }
-    public int Proactivity { get; private set; }
-    public int Cooperation { get; private set; }
-    public int Preparedness { get; private set; }
+    public int Success { get; private set; }
+    public int SelfReflection { get; private set; }
     public int Creativity { get; private set; }
+    public int Cooperation { get; private set; }
+    public int Competency { get; private set; }
+    public int Initiative { get; private set; }
 
-    public Stats(int energy = 50, int motivation = 50, int confidence = 50,
-        int proactivity = 50, int cooperation = 50,
-        int preparedness = 50, int creativity = 50)
+    public Stats(int energy = 50, int success = 50, int selfreflection = 50,
+        int creativity = 50, int cooperation = 50,
+        int competency = 50, int initiative = 50)
     {
         Energy = energy;
-        Motivation = motivation;
-        Confidence = confidence;
-        Proactivity = proactivity;
-        Cooperation = cooperation;
-        Preparedness = preparedness;
+        Success = success;
+        SelfReflection = selfreflection;
         Creativity = creativity;
+        Cooperation = cooperation;
+        Competency = competency;
+        Initiative = initiative;
     }
 
     public Stats() { }
@@ -32,11 +32,9 @@ public class Stats
     {
         int baseVal = level switch
         {
-            Level.Student => 40,
-            Level.Graduate => 55,
-            Level.Professional => 65,
-            Level.Doctor => 70,
-            Level.Professor => 75,
+            Level.Doktorandusz => 40,
+            Level.Docens => 55,
+            Level.Adjunktus => 65,
             _ => 50
         };
 
@@ -46,25 +44,25 @@ public class Stats
     public void ApplyDelta(Stats delta)
     {
         Energy = Clamp(Energy + delta.Energy);
-        Motivation = Clamp(Motivation + delta.Motivation);
-        Confidence = Clamp(Confidence + delta.Confidence);
-        Proactivity = Clamp(Proactivity + delta.Proactivity);
-        Cooperation = Clamp(Cooperation + delta.Cooperation);
-        Preparedness = Clamp(Preparedness + delta.Preparedness);
+        Success = Clamp(Success + delta.Success);
+        SelfReflection = Clamp(SelfReflection + delta.SelfReflection);
         Creativity = Clamp(Creativity + delta.Creativity);
+        Cooperation = Clamp(Cooperation + delta.Cooperation);
+        Competency = Clamp(Competency + delta.Competency);
+        Initiative = Clamp(Initiative + delta.Initiative);
     }
 
-    public int Total => Energy + Motivation + Confidence + Proactivity + Cooperation + Preparedness + Creativity;
+    public int Total => Energy + Success + SelfReflection + Creativity + Cooperation + Competency + Initiative;
 
-    public IReadOnlyDictionary<string, int> AsDictionary() => new Dictionary<string, int>
+    public IReadOnlyDictionary<string, (string Canonical, int Value)> AsDictionary() => new Dictionary<string, (string, int)>
     {
-        ["Energy"] = Energy,
-        ["Motivation"] = Motivation,
-        ["Confidence"] = Confidence,
-        ["Proactivity"] = Proactivity,
-        ["Cooperation"] = Cooperation,
-        ["Preparedness"] = Preparedness,
-        ["Creativity"] = Creativity
+        ["Energia"] = ("Energy", Energy),
+        ["Hallgatói motiváció"] = ("Success", Success),
+        ["Önreflexió"] = ("SelfReflection", SelfReflection),
+        ["Kreativitás"] = ("Creativity", Creativity),
+        ["Együttműködés"] = ("Cooperation", Cooperation),
+        ["Felkészültség"] = ("Competency", Competency),
+        ["Kezdeményezőkészség"] = ("Initiative", Initiative)
     };
 
     private int Clamp(int value) => Math.Clamp(value, MIN_LEVEL, MAX_LEVEL);

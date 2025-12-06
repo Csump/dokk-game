@@ -2,12 +2,16 @@
 
 @if (Stats is not null)
 {
-    <section class="player-stats-bar shadow-sm">
+    <section class="player-stats-bar">
         @foreach (var stat in Stats.AsDictionary())
         {
-            <div class="player-stat">
-                <span class="label">@stat.Key</span>
-                <span class="value">@stat.Value</span>
+            var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
+            var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
+
+            <div class="@cssClass">
+                <div class="shine" />
+                <img src="@iconPath" class="stat-icon" />
+                <span class="value">@stat.Value.Value</span>
             </div>
         }
     </section>
