@@ -17,7 +17,7 @@
     <div class="upper-wrapper">
         <h1>Karakterválasztás</h1>
         <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
-        
+
         <div class="level-selector">
             @foreach (var level in Enum.GetValues<Level>())
             {
@@ -30,57 +30,86 @@
         </div>
     </div>
 
-    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit" FormName="character-setup">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        
-        <div class="character-info">
-            <div class="character-title">
-                <p class="character-name">@CurrentCharacter.Name</p>
-                <p class="character-quote">„@CurrentCharacter.Quote”</p>
-            </div>
-            
-            <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
+    <div class="character-info">
+        <div class="character-title">
+            <p class="character-name">@CurrentCharacter.Name</p>
+            <p class="character-quote">„@CurrentCharacter.Quote"</p>
         </div>
-        
-        <button type="button" class="fancy-light arrow-button left" @onclick="PrevCharacter">
-            ←
+
+        <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
+    </div>
+
+    <button type="button" class="fancy-light arrow-button left" @onclick="PrevCharacter">
+        ←
+    </button>
+
+    <div class="character-shine" />
+
+    <img class="character-image" src="@CurrentCharacter.ImageUrl" alt="Karakterillusztráció" />
+
+    <button type="button" class="fancy-light arrow-button right" @onclick="NextCharacter">
+        →
+    </button>
+
+    <PlayerStatsBar Stats="@PreviewStats" />
+
+    <div class="continue-wrapper">
+        <button class="fancy-light" type="button" @onclick="ShowUsernamePopup">
+            <div class="shine" />
+            Tovább →
         </button>
-        
-        <div class="character-shine"/>
-
-        <img class="character-image" src="@CurrentCharacter.ImageUrl" alt="Karakterillusztráció" />
-
-        <button type="button" class="fancy-light arrow-button right" @onclick="NextCharacter">
-            →
-        </button>
-        
-        <PlayerStatsBar Stats="@PreviewStats" />
-
-        <div class="continue-wrapper">
-            <button class="fancy-light" type="submit" disabled="@_isSubmitting"><div class="shine"/>
-                @if (_isSubmitting)
-                {
-                    <span class="spinner-border spinner-border-sm" role="status"></span>
-                    <span class="ms-2">Készülj a kalandra...</span>
-                }
-                else
-                {
-                    <span>Tovább →</span>
-                }
-            </button>
-        </div>
-    </EditForm>
+    </div>
 </div>
+
+@if (_showUsernamePopup)
+{
+    <div class="modal-overlay" @onclick="HideUsernamePopup">
+        <div class="modal-content" @onclick:stopPropagation="true">
+
+            <div class="modal-text">
+                <h1>Válassz felhasználónevet!</h1>
+                <p>Ezzel a névvel vesszük fel a játékvégi eredményeidet rangsorba. Óvakodj a határozatlanságtól: a nevedet nem változtathatod meg többé.</p>
+            </div>
+
+            <EditForm style="width: 100%;" Model="_model" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    <InputText id="username" class="form-control" @bind-Value="_model.Username" placeholder="Írd ide a neved..."
+                               style="box-sizing: border-box; padding: 10px 20px; background: var(--powder-50); border: 1px solid var(--cobalt-500); box-shadow: 0px 5px 0px var(--cobalt-500); border-radius: 15px; font-weight: 600; font-size: 24px; margin-bottom: 5px;" />
+                    <ValidationMessage For="@(() => _model.Username)" />
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" @onclick="HideUsernamePopup">Mégse</button>
+                    <button type="submit" class="fancy-light" disabled="@_isSubmitting">
+                        <div class="shine" />
+                        @if (_isSubmitting)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            <span class="ms-2">Készülj a kalandra...</span>
+                        }
+                        else
+                        {
+                            <span>Mehet!</span>
+                        }
+                    </button>
+                </div>
+            </EditForm>
+
+        </div>
+    </div>
+}
 
 @code {
     private readonly CharacterSetupModel _model = new();
     private bool _isSubmitting;
-    
+    private bool _showUsernamePopup;
+
     private int CurrentIndex { get; set; } = 0;
     private CharacterData CurrentCharacter => Characters[CurrentIndex];
     private Stats PreviewStats => Stats.GetDefault(_model.Level, CurrentCharacter.Gender, CurrentCharacter.Age);
-    
+
     private void PrevCharacter()
     {
         CurrentIndex = (CurrentIndex - 1 + Characters.Count) % Characters.Count;
@@ -97,12 +126,24 @@
         StateHasChanged();
     }
 
+    private void ShowUsernamePopup()
+    {
+        _showUsernamePopup = true;
+        StateHasChanged();
+    }
+
+    private void HideUsernamePopup()
+    {
+        _showUsernamePopup = false;
+        StateHasChanged();
+    }
+
     private async Task HandleValidSubmit()
     {
         if (_isSubmitting) return;
 
         _isSubmitting = true;
-        
+
         try
         {
             var player = await GameService.CreatePlayerAsync(
@@ -115,12 +156,13 @@
             GameState.SetPlayer(player);
             Navigation.NavigateTo($"/play?playerId={player.Id}", true);
         }
-        finally
+        catch
         {
             _isSubmitting = false;
+            throw;
         }
     }
-    
+
     private static string FormatEnum(Enum e)
         => string.Join(' ', Regex.Split(e.ToString(), "(?<=.)(?=[A-Z])"));
 
