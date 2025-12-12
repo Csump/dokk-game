@@ -14,6 +14,20 @@ public class GameService
         _context = context;
     }
 
+    public async Task<bool> IsUsernameAvailableAsync(string username)
+    {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            return false;
+        }
+
+        var normalized = username.Trim();
+
+        return !await _context.Players
+            .AnyAsync(p => p.Username != null &&
+                           p.Username.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
     public async Task<Player> CreatePlayerAsync(string username, Level level, Gender gender, Age age)
     {
         username = username?.Trim() ?? string.Empty;
