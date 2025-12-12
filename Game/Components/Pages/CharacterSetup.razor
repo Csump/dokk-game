@@ -6,6 +6,7 @@
 @using Game.Models
 @using Game.Services
 @using Game.Components.Shared
+@using Microsoft.AspNetCore.Components.Forms
 
 @inject GameService GameService
 @inject GameState GameState
@@ -71,18 +72,24 @@
                 <p>Ezzel a névvel vesszük fel a játékvégi eredményeidet rangsorba. Óvakodj a határozatlanságtól: a nevedet nem változtathatod meg többé.</p>
             </div>
 
-            <EditForm style="width: 100%;" Model="_model" OnValidSubmit="HandleValidSubmit">
+            <EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit" style="width: 100%;">
                 <DataAnnotationsValidator />
 
                 <div class="form-group">
-                    <InputText id="username" class="form-control" @bind-Value="_model.Username" placeholder="Írd ide a neved..."
+                    <InputText id="username" class="form-control"
+                               @bind-Value="_model.Username"
+                               placeholder="Írd ide a neved..."
+                               maxlength="32"
+                               @oninput="OnUsernameInput"
                                style="box-sizing: border-box; padding: 10px 20px; background: var(--powder-50); border: 1px solid var(--cobalt-500); box-shadow: 0px 5px 0px var(--cobalt-500); border-radius: 15px; font-weight: 600; font-size: 24px; margin-bottom: 5px;" />
-                    <ValidationMessage For="@(() => _model.Username)" />
+                    <div class="validation-message-container">
+                        <ValidationMessage For="@(() => _model.Username)" />
+                    </div>
                 </div>
 
                 <div class="modal-buttons">
                     <button type="button" @onclick="HideUsernamePopup">Mégse</button>
-                    <button type="submit" class="fancy-light" disabled="@_isSubmitting">
+                    <button type="submit" class="fancy-light" disabled="@(_isSubmitting || !IsUsernameEntered)">
                         <div class="shine" />
                         @if (_isSubmitting)
                         {
@@ -103,12 +110,34 @@
 
 @code {
     private readonly CharacterSetupModel _model = new();
+    private readonly EditContext _editContext;
+    private readonly ValidationMessageStore _messages;
+
+    public CharacterSetup()
+    {
+        _editContext = new EditContext(_model);
+        _messages = new ValidationMessageStore(_editContext);
+    }
+
     private bool _isSubmitting;
     private bool _showUsernamePopup;
 
     private int CurrentIndex { get; set; } = 0;
     private CharacterData CurrentCharacter => Characters[CurrentIndex];
     private Stats PreviewStats => Stats.GetDefault(_model.Level, CurrentCharacter.Gender, CurrentCharacter.Age);
+
+    private bool IsUsernameEntered => !string.IsNullOrWhiteSpace(_model.Username);
+
+    private void OnUsernameInput(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? string.Empty;
+        _model.Username = value;
+
+        _messages.Clear(new FieldIdentifier(_model, nameof(_model.Username)));
+        _editContext.NotifyValidationStateChanged();
+
+        StateHasChanged();
+    }
 
     private void PrevCharacter()
     {
@@ -134,6 +163,7 @@
 
     private void HideUsernamePopup()
     {
+        if (_isSubmitting) return;
         _showUsernamePopup = false;
         StateHasChanged();
     }
@@ -142,12 +172,41 @@
     {
         if (_isSubmitting) return;
 
+        _messages.Clear();
+
+        var username = _model.Username?.Trim() ?? string.Empty;
+
+        if (username.Length == 0)
+        {
+            _messages.Add(new FieldIdentifier(_model, nameof(_model.Username)),
+                "Álljon meg a menet! Ez nem maradhat üresen!");
+            _editContext.NotifyValidationStateChanged();
+            return;
+        }
+
+        if (username.Length > 32)
+        {
+            _messages.Add(new FieldIdentifier(_model, nameof(_model.Username)),
+                "A felhasználóneved legfeljebb 32 karakter lehet.");
+            _editContext.NotifyValidationStateChanged();
+            return;
+        }
+
+        var isTaken = !string.IsNullOrEmpty(username) && await GameService.IsUsernameAvailableAsync(username) == false;
+        if (isTaken)
+        {
+            _messages.Add(new FieldIdentifier(_model, nameof(_model.Username)),
+                "Ez a felhasználónév már foglalt. Válassz másikat!");
+            _editContext.NotifyValidationStateChanged();
+            return;
+        }
+
         _isSubmitting = true;
 
         try
         {
             var player = await GameService.CreatePlayerAsync(
-                _model.Username ?? string.Empty,
+                username,
                 _model.Level,
                 CurrentCharacter.Gender,
                 CurrentCharacter.Age
@@ -156,18 +215,18 @@
             GameState.SetPlayer(player);
             Navigation.NavigateTo($"/play?playerId={player.Id}", true);
         }
-        catch
+        finally
         {
             _isSubmitting = false;
-            throw;
         }
     }
-
+    
     private static string FormatEnum(Enum e)
         => string.Join(' ', Regex.Split(e.ToString(), "(?<=.)(?=[A-Z])"));
 
     private class CharacterSetupModel
     {
+        [Required(ErrorMessage = "Álljon meg a menet! Ez nem maradhat üresen!")]
         [StringLength(32, ErrorMessage = "A felhasználóneved legfeljebb 32 karakter lehet.")]
         public string? Username { get; set; }
 

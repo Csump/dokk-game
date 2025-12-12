@@ -50,10 +50,6 @@
 }
 
     .modal-content p {
-        /*font-weight: 500;
-        font-size: 18px;
-        line-height: 23px;
-        color: #F8FAF9;*/
         flex: none;
         order: 0;
         flex-grow: 1;
@@ -85,8 +81,10 @@
     background-color: blue;
 }
 
-ValidationMessage {
+.validation-message-container {
     width: 100%;
+    margin: 10px;
+    color: var(--rose-400);
 }
 
 .modal-buttons {
