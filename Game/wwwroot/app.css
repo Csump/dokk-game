@@ -1,14 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
 
+* {
+    font-family: 'Hanken Grotesk', Helvetica, sans-serif;
+}
+
 html, body, .main-container {
-    width: 100%;
+    width: 100vw;
     height: 100%;
     background-color: var(--powder-900);
     outline: none;
     margin: 0;
     overflow: hidden;
 
-    font-family: 'Hanken Grotesk', Helvetica, sans-serif;
     color: var(--powder-50);
     font-style: normal;
     font-weight: 500;
