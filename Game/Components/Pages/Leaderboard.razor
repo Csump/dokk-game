@@ -8,54 +8,59 @@
 
 <PageTitle>Rangsor</PageTitle>
 
-@if (isLoading)
-{
-    <div class="text-center py-5">
-        <div class="spinner-border"></div>
-        <p>Dobpergés...</p>
-    </div>
-}
-else if (GameState.CurrentPlayer is not null)
-{
-    <section class="summary">
-        <h1>Pazar teljesítmény!</h1>
-        <p>Magas pontszámot, kiváló teljesítményt értél el a játékban, ami azt jelenti, hogy úgy értél el magas hallgatói elégedettséget, hogy viszonylag sok energiapontod meg is maradt. A játék folyamán tehát sok  olyan jó  döntést hoztál, ami kevesebb energiabefektetéssel magasabb hallgatói elégedettséget eredményezett.</p>
-    </section>
+<div class="main-container">
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border"></div>
+            <p>Dobpergés...</p>
+        </div>
+    }
+    else if (GameState.CurrentPlayer is not null)
+    {
+        <section class="summary">
+            <h1>Pazar teljesítmény!</h1>
+            <p>Magas pontszámot, kiváló teljesítményt értél el a játékban, ami azt jelenti, hogy úgy értél el magas hallgatói elégedettséget, hogy viszonylag sok energiapontod meg is maradt. A játék folyamán tehát sok  olyan jó  döntést hoztál, ami kevesebb energiabefektetéssel magasabb hallgatói elégedettséget eredményezett.</p>
+        </section>
 
-    <section class="ranking">
-        @foreach (var (entry, index) in entries.Select((value, idx) => (value, idx + 1)))
-        {
-            var isCurrent = GameState.CurrentPlayer?.Id == entry.Id;
-            <div class="rank-chip @(isCurrent ? "current-player" : "")">
-                <div class="rank">@index</div>
-                <div class="username">@entry.Username</div>
-                <div class="score">@entry.TotalScore</div>
-            </div>
-        }
-    </section>
-
-    <section class="stat-evaluation">
-        @foreach (var stat in GameState.CurrentPlayer.Stats.AsDictionary())
-        {
-            var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
-            var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
-
-            <div>
-                <div class="@cssClass">
-                    <div class="shine" />
-                    <img src="@iconPath" class="stat-icon" />
-                    <span class="value">@stat.Value.Value</span>
-
-                    <div class="tooltip tooltip-top">
-                        @stat.Key
+        <section class="ranking">
+            @foreach (var (entry, index) in entries.Select((value, idx) => (value, idx + 1)))
+            {
+                var isCurrent = GameState.CurrentPlayer?.Id == entry.Id;
+                <div class="rank-chip @(isCurrent ? "current-player" : "") @(index == 1 ? "first" : "")">
+                    <div class="rank">@index</div>
+                    <div class="username">@entry.Username</div>
+                    <div class="score">
+                        <div class="rank-shine" />
+                        @entry.TotalScore
                     </div>
                 </div>
-                <h3>Kreativitás</h3>
-                <p>A kreativitás területén kevés pontot gyűjtöttél, ami arra utalhat, hogy hajlamos vagy a dolgokat inkább egy, már ismert módon megközelíteni. Ennek hátrányát leggyakrabban akkor érezheted, amikor valami kizökkent a megszokottból, az oktatási gyakorlatodban korlátozva érzed magad, esetleg túlzott energiát követel tőled vagy egyenesen lehetetlennek tűnik számodra valami. Érdemes megfigyelni, hogy mások milyen megoldásokat alkalmaznak hasonló helyzetekre; esetleg megosztani az ötleteidet olyanokkal, akik új perspektívából inspirálhatnak; illetve azonosítani önmagadban azokat a színtereket, akár hétköznapi példákat, ahol kreatívnak érzed magad.</p>
-            </div>
-        }
-    </section>
-}
+            }
+        </section>
+
+        <section class="stat-evaluation">
+            @foreach (var stat in GameState.CurrentPlayer!.Stats.AsDictionary())
+            {
+                var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
+                var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
+
+                <div class="evaluation-card">
+                    <div class="@cssClass">
+                        <div class="shine" />
+                        <img src="@iconPath" class="stat-icon" />
+                        <span class="value">@stat.Value.Value</span>
+
+                        <div class="tooltip tooltip-top">
+                            @stat.Key
+                        </div>
+                    </div>
+                    <h3>Kreativitás</h3>
+                    <p>A kreativitás területén kevés pontot gyűjtöttél, ami arra utalhat, hogy hajlamos vagy a dolgokat inkább egy, már ismert módon megközelíteni. Ennek hátrányát leggyakrabban akkor érezheted, amikor valami kizökkent a megszokottból, az oktatási gyakorlatodban korlátozva érzed magad, esetleg túlzott energiát követel tőled vagy egyenesen lehetetlennek tűnik számodra valami. Érdemes megfigyelni, hogy mások milyen megoldásokat alkalmaznak hasonló helyzetekre; esetleg megosztani az ötleteidet olyanokkal, akik új perspektívából inspirálhatnak; illetve azonosítani önmagadban azokat a színtereket, akár hétköznapi példákat, ahol kreatívnak érzed magad.</p>
+                </div>
+            }
+        </section>
+    }
+</div>
 
 @code {
     private readonly List<Player> entries = new();
