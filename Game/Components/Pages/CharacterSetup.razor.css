@@ -68,19 +68,6 @@
     flex-grow: 0;
 }
 
-.edit-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    width: 100%;
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
-    background-color: blue;
-}
-
 .validation-message-container {
     width: 100%;
     margin: 10px;
