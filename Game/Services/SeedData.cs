@@ -1,41 +1,181 @@
 ﻿using Game.Data;
 using Game.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Game.Services;
 
 public static class SeedData
 {
-    public static void Initialize(GameDbContext context)
+    public static void Initialize(GameDbContext context, IWebHostEnvironment env)
     {
-        if (context.Situations.Any()) return;
+        if (context.Situations.Any())
+            return;
 
-        var s1 = new Decision { Id = Guid.NewGuid(), Title = "The Beginning", Text = "Your adventure starts!", IsStarter = true, IllustrationUrl = "images/start.png"};
-        var s2 = new Info { Id = Guid.NewGuid(), Title = "The Crossroad", Text = "You see two paths ahead.", IllustrationUrl = "images/crossroad.png" };
-        var s3 = new Conversation { Id = Guid.NewGuid(), Title = "Victory!", Text = "You’ve reached the end.", IsTerminal = true, IllustrationUrl = "images/victory.png" };
+        var basePath = Path.Combine(env.ContentRootPath, "Data");
 
-        var c1 = new Choice
+        var situations = LoadSituations(Path.Combine(basePath, "situations.csv"));
+        var choices = LoadChoices(Path.Combine(basePath, "choices.csv"));
+
+        var situationMap = situations.ToDictionary(s => s.ExternalId, s => s);
+
+        foreach (var choice in choices)
         {
-            Id = Guid.NewGuid(),
-            SituationId = s1.Id,
-            Text = "Walk forward",
-            NextSituationId = s2.Id,
-            DeltaStats = new Stats(energy: -5, success: +5)
-        };
+            choice.SituationId = situationMap[choice.SituationExternalId].Id;
+            choice.NextSituationId = situationMap[choice.NextSituationExternalId].Id;
 
-        var c2 = new Choice
-        {
-            Id = Guid.NewGuid(),
-            SituationId = s2.Id,
-            Text = "Take the left path",
-            NextSituationId = s3.Id,
-            DeltaStats = new Stats(energy: -10, selfreflection: +10)
-        };
+            situationMap[choice.SituationExternalId].Choices.Add(choice);
+        }
 
-        s1.Choices.Add(c1);
-        s2.Choices.Add(c2);
-
-        context.Situations.AddRange(s1, s2, s3);
-        context.Choices.AddRange(c1, c2);
+        context.Situations.AddRange(situations);
+        context.Choices.AddRange(choices);
         context.SaveChanges();
     }
+
+    private static List<Situation> LoadSituations(string path)
+    {
+        var result = new List<Situation>();
+
+        using var parser = new TextFieldParser(path);
+        parser.SetDelimiters(";");
+        parser.HasFieldsEnclosedInQuotes = true;
+
+        parser.ReadLine();
+
+        while (!parser.EndOfData)
+        {
+            var c = parser.ReadFields();
+            if (c == null) continue;
+
+            var type = c[7];
+            Situation s = type switch
+            {
+                "Döntés" => new Decision(),
+                "Spéci" => new Decision(),
+                "Infó" => new Info(),
+                "Minijáték" => new Info(),
+                "Párbeszéd" => new Conversation(),
+                _ => throw new Exception($"Unknown situation type: {type}")
+            };
+
+            s.Id = Guid.NewGuid();
+            s.ExternalId = c[0];
+            s.Title = c[1];
+            s.Text = c[2];
+            s.IllustrationUrl = c[3];
+            s.IsStarter = bool.Parse(c[4]);
+            s.IsHalftime = bool.Parse(c[5]);
+            s.IsTerminal = bool.Parse(c[6]);
+            s.NextSituationExternalId = c[8];
+
+            result.Add(s);
+        }
+
+        return result;
+    }
+
+    private static List<Choice> LoadChoices(string path)
+    {
+        var result = new List<Choice>();
+
+        using var parser = new TextFieldParser(path);
+        parser.SetDelimiters(";");
+        parser.HasFieldsEnclosedInQuotes = true;
+
+        parser.ReadLine();
+
+        while (!parser.EndOfData)
+        {
+            var c = parser.ReadFields();
+            if (c == null) continue;
+
+            var choice = new Choice
+            {
+                Id = Guid.NewGuid(),
+                ExternalId = c[0],
+                SituationExternalId = c[1],
+                Text = c[2],
+                NextSituationExternalId = c[3],
+                DeltaStats = new Stats(
+                    energy: ParseIntOrZero(c[4]),
+                    selfreflection: ParseIntOrZero(c[5]),
+                    competency: ParseIntOrZero(c[6]),
+                    initiative: ParseIntOrZero(c[7]),
+                    creativity: ParseIntOrZero(c[8]),
+                    cooperation: ParseIntOrZero(c[9]),
+                    success: ParseIntOrZero(c[10])
+                )
+            };
+
+            result.Add(choice);
+        }
+
+        return result;
+    }
+
+    private static int ParseIntOrZero(string s) =>
+        int.TryParse(s, out var result) ? result : 0;
+
+    /*private static List<Situation> LoadSituations(string path)
+    {
+        return File.ReadAllLines(path)
+            .Skip(1)
+            .Select(line =>
+            {
+                var c = line.Split(';');
+
+                var type = c[7];
+                Situation s = type switch
+                {
+                    "Döntés" => new Decision(),
+                    "Spéci" => new Decision(),
+                    "Infó" => new Info(),
+                    "Minijáték" => new Info(),
+                    "Párbeszéd" => new Conversation(),
+                    _ => throw new Exception($"Unknown situation type: {type}")
+                };
+
+                s.Id = Guid.NewGuid();
+                s.ExternalId = c[0];
+                s.Title = c[1];
+                s.Text = c[2];
+                s.IllustrationUrl = c[3];
+                s.IsStarter = bool.Parse(c[4]);
+                s.IsHalftime = bool.Parse(c[5]);
+                s.IsTerminal = bool.Parse(c[6]);
+                s.NextSituationExternalId = c[8];
+
+                return s;
+            })
+            .ToList();
+    }*/
+
+    /*private static List<Choice> LoadChoices(string path)
+    {
+        return File.ReadAllLines(path)
+            .Skip(1)
+            .Select(line =>
+            {
+                var c = line.Split(';');
+
+                return new Choice
+                {
+                    Id = Guid.NewGuid(),
+                    ExternalId = c[0],
+                    SituationExternalId = c[1],
+                    Text = c[2],
+                    NextSituationExternalId = c[3],
+                    DeltaStats = new Stats(
+                        energy: int.Parse(c[4]),
+                        selfreflection: int.Parse(c[5]),
+                        competency: int.Parse(c[6]),
+                        initiative: int.Parse(c[7]),
+                        creativity: int.Parse(c[8]),
+                        cooperation: int.Parse(c[9]),
+                        success: int.Parse(c[10])
+                    )
+                };
+            })
+            .ToList();
+    }*/
 }

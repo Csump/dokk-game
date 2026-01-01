@@ -18,7 +18,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
-    SeedData.Initialize(db);
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+    SeedData.Initialize(db, env);
 }
 
 // Configure the HTTP request pipeline.

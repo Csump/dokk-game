@@ -7,10 +7,6 @@
         {
             <button class="list-group-item list-group-item-action" @onclick="() => OnChoice.InvokeAsync(choice)">
                 <span class="choice-text">@choice.Text</span>
-                @if (!string.IsNullOrWhiteSpace(choice.Description))
-                {
-                    <small class="text-muted d-block">@choice.Description</small>
-                }
             </button>
         }
     </div>
