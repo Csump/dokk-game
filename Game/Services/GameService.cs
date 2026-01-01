@@ -61,6 +61,17 @@ public class GameService
             .FirstOrDefaultAsync(s => s.Id == player.CurrentSituationId);
     }
 
+    public async Task<Player> ProceedAsync(Player player, Guid situationId)
+    {
+        var situation = await _context.Situations.FindAsync(situationId);
+        if (situation == null) return player;
+
+        player.Proceed(situation);
+        _context.Update(player);
+        await _context.SaveChangesAsync();
+        return player;
+    }
+
     public async Task<Player> TakeChoiceAsync(Player player, Guid choiceId)
     {
         var choice = await _context.Choices.FindAsync(choiceId);

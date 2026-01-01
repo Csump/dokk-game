@@ -1,0 +1,40 @@
+﻿.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 120px 700px 120px 150px;
+    gap: 100px;
+    isolation: isolate;
+    position: relative;
+    background: linear-gradient(0deg, var(--slate-900) 0%, var(--slate-800) 100%);
+}
+
+.situation-illustration {
+    box-sizing: border-box;
+    display: flex;
+    padding: 0px;
+
+    max-width: 1000px;
+    max-height: 500px;
+
+    border-width: 2px 2px 4px 2px;
+    border-style: solid;
+    border-color: var(--powder-50);
+    box-shadow: 0px 0px 5px #FFFFFF, 0px -3px 15px rgba(255, 255, 255, 0.85), 0px -15px 50px rgba(255, 255, 255, 0.65);
+    border-radius: 15px;
+
+    flex: none;
+    flex-grow: 1;
+    z-index: 1;
+}
+
+.title {
+    max-width: 1000px;
+    font-weight: 900;
+    font-size: 2em;
+    letter-spacing: -0.02em;
+
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+}

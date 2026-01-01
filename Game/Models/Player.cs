@@ -23,4 +23,9 @@ public class Player
         Decisions.Add(new DecisionLog { ChoiceId = choice.Id });
         CurrentSituationId = choice.NextSituationId;
     }
+
+    public void Proceed(Situation situation)
+    {
+        CurrentSituationId = situation.NextSituationId ?? CurrentSituationId;
+    }
 }

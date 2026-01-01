@@ -11,59 +11,66 @@
 
 <PageTitle>Gameplay</PageTitle>
 
-@if (player is null)
-{
-    <div class="alert alert-info">
-        You don’t have an active game right now. <a href="/setup">Create a character</a> to get started.
-    </div>
-}
-else if (isLoading || currentSituation is null)
-{
-    <div class="text-center py-5">
-        <div class="spinner-border" role="status"></div>
-        <p class="mt-3 text-muted">Preparing your next situation...</p>
-    </div>
-}
-else
-{
-    <div class="row gy-4">
-        <div class="col-xl-8">
-            <SituationCard Situation="@currentSituation">
-                <BodyContent>
-                    @if (currentSituation is Minigame)
-                    {
-                        <MinigamePlaceholder />
-                    }
-                    else if (HasChoices)
-                    {
-                        <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
-                    }
-                    else if (!currentSituation.IsTerminal)
-                    {
-                        <button class="btn btn-primary" @onclick="ContinueAsync" disabled="@isProcessing">
-                            @(isProcessing ? "Loading..." : "Continue")
-                        </button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-success" @onclick="GoToResults" disabled="@isProcessing">View Evaluation</button>
-                    }
-                </BodyContent>
-            </SituationCard>
+<div class="main-container">
+    @if (player is null)
+    {
+        <div class="alert alert-info">
+            Nincs aktív játékod. <a href="/setup">Alkoss egy karaktert</a> a játék megkezdéséhez!
         </div>
-        <div class="col-xl-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="h5 d-flex justify-content-between align-items-center">
-                        <span>Decision history</span>
-                        <span class="badge bg-secondary">@player.Decisions.Count</span>
-                    </h2>
-                    <DecisionHistory Decisions="player.Decisions" />
-                </div>
-            </div>
+    }
+    else if (isLoading || currentSituation is null)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border" role="status"></div>
+            <p class="mt-3 text-muted">Szituáció előkészítése...</p>
         </div>
-    </div>
-}
+    }
+    else
+    {
+        <div class="situation" Situation="@currentSituation">
+
+            @if (currentSituation.IllustrationUrl is not null)
+            {
+                <img src="@currentSituation.IllustrationUrl" alt="Illusztráció" class="situation-illustration" />
+			}
+
+            <p class="title">@currentSituation.Title</p>
+
+			@if (currentSituation.Text is not null && currentSituation.Text.Length > 0)
+            {
+                <p class="text">@currentSituation.Text</p>
+			}
+
+            @if (currentSituation is Minigame)
+            {
+                <MinigamePlaceholder />
+            }
+            else if (currentSituation is Info)
+            {
+                <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
+                    <div class="shine" />
+                    @(isProcessing ? "Máris..." : "Tovább →")
+                </button>
+            }
+            else if (currentSituation is Decision)
+            {
+                <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
+            }
+            else if (currentSituation is Conversation)
+            {
+                <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
+            }
+            else
+            {
+                <button class="fancy-light" type="button" @onclick="GoToResults" disabled="@isProcessing">
+                    <div class="shine" />
+                    Eredmények megtekintése
+                </button>
+            }
+        </div>
+    }
+
+</div>
 
 @code {
     private Player? player;
@@ -143,18 +150,31 @@ else
         }
     }
 
-    private async Task ContinueAsync()
+    private async Task ProceedAsync()
     {
-        if (currentSituation?.Choices?.Count > 0)
+        if (player is null || isProcessing || currentSituation is null)
         {
-            await HandleChoiceAsync(currentSituation.Choices.First());
+            return;
         }
-        else
+
+        isProcessing = true;
+
+        try
         {
-            if (player is not null)
+            player = await GameService.ProceedAsync(player, currentSituation.Id);
+            GameState.UpdatePlayer(player);
+
+            if (currentSituation.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || player.CurrentSituationId == Guid.Empty)
             {
                 Navigation.NavigateTo($"/results?playerId={player.Id}");
+                return;
             }
+
+            await LoadSituationAsync();
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 
