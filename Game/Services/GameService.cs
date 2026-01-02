@@ -86,6 +86,14 @@ public class GameService
         return player;
     }
 
+    public async Task<Player> ContinueFromHalftimeAsync(Player player, Guid nextSituationId)
+    {
+        player.CurrentSituationId = nextSituationId;
+        _context.Update(player);
+        await _context.SaveChangesAsync();
+        return player;
+    }
+
     public async Task CompleteRunAsync(Player player)
     {
         player.CompletedAt = DateTime.UtcNow;
