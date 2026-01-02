@@ -87,13 +87,6 @@
                     }
                 </div>
             }
-            else
-            {
-                <button class="fancy-light" type="button" @onclick="GoToResults" disabled="@isProcessing">
-                    <div class="shine" />
-                    Eredmények megtekintése
-                </button>
-            }
         </div>
     }
 
@@ -154,6 +147,21 @@
         return player?.Decisions?.Any(d => d.ChoiceId == choice.Id) ?? false;
     }
 
+    private void CheckCheckpoint()
+    {
+        if (currentSituation is null || currentSituation?.IsHalftime == true)
+        {
+            Navigation.NavigateTo($"/results?playerId={player.Id}");
+            return;
+        }
+
+        if (currentSituation?.IsTerminal == true)
+        {
+            Navigation.NavigateTo($"/leaderboard?playerId={player.Id}");
+            return;
+        }
+    }
+
     private async Task HandleChoiceAsync(Choice choice)
     {
         if (player is null || isProcessing || IsChoiceTaken(choice))
@@ -168,12 +176,7 @@
             player = await GameService.TakeChoiceAsync(player, choice.Id);
             GameState.UpdatePlayer(player);
 
-            if (choice.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || player.CurrentSituationId == Guid.Empty)
-            {
-                Navigation.NavigateTo($"/results?playerId={player.Id}");
-                return;
-            }
-
+            CheckCheckpoint();
             await LoadSituationAsync();
         }
         finally
@@ -197,19 +200,8 @@
             player = await GameService.ProceedAsync(player, currentSituation.Id);
             GameState.UpdatePlayer(player);
 
-            if (player.CurrentSituationId == Guid.Empty)
-            {
-                Navigation.NavigateTo($"/results?playerId={player.Id}");
-                return;
-            }
-
+            CheckCheckpoint();
             await LoadSituationAsync();
-            
-            if (currentSituation?.IsTerminal == true)
-            {
-                Navigation.NavigateTo($"/results?playerId={player.Id}");
-                return;
-            }
         }
         finally
         {

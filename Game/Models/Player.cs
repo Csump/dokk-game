@@ -17,15 +17,34 @@ public class Player
 
     public int TotalScore => Stats.Total;
 
-    public void TakeChoice(Choice choice)
+    public void TakeChoice(Choice choice, Situation situation)
     {
         Stats.ApplyDelta(choice.DeltaStats);
         Decisions.Add(new DecisionLog { ChoiceId = choice.Id });
-        CurrentSituationId = choice.NextSituationId;
+
+        if (situation.IsTerminal)
+        {
+            CompletedAt = DateTime.UtcNow;
+            return;
+        }
+
+        if (!situation.IsHalftime)
+        {
+            CurrentSituationId = choice.NextSituationId;
+        }
     }
 
     public void Proceed(Situation situation)
     {
-        CurrentSituationId = situation.NextSituationId ?? CurrentSituationId;
+        if (situation.IsTerminal)
+        {
+            CompletedAt = DateTime.UtcNow;
+            return;
+        }
+
+        if (!situation.IsHalftime)
+        {
+            CurrentSituationId = situation.NextSituationId ?? CurrentSituationId;
+        }
     }
 }

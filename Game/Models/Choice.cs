@@ -13,6 +13,4 @@ public class Choice
     public Guid NextSituationId { get; set; }
     public string NextSituationExternalId { get; set; } = default!;
     public Stats DeltaStats { get; set; } = new();
-
-    public void ApplyChoice(Player player) => player.TakeChoice(this);
 }

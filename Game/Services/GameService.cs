@@ -74,10 +74,13 @@ public class GameService
 
     public async Task<Player> TakeChoiceAsync(Player player, Guid choiceId)
     {
-        var choice = await _context.Choices.FindAsync(choiceId);
+        Choice? choice = await _context.Choices.FindAsync(choiceId);
         if (choice == null) return player;
 
-        player.TakeChoice(choice);
+        Situation? situation = await _context.Situations.FindAsync(choice.SituationId);
+        if (situation == null) return player;
+
+        player.TakeChoice(choice, situation);
         _context.Update(player);
         await _context.SaveChangesAsync();
         return player;
