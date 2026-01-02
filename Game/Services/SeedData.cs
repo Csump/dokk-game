@@ -19,6 +19,15 @@ public static class SeedData
 
         var situationMap = situations.ToDictionary(s => s.ExternalId, s => s);
 
+        foreach (var situation in situations)
+        {
+            if (!string.IsNullOrEmpty(situation.NextSituationExternalId) && 
+                situationMap.TryGetValue(situation.NextSituationExternalId, out var nextSituation))
+            {
+                situation.NextSituationId = nextSituation.Id;
+            }
+        }
+
         foreach (var choice in choices)
         {
             choice.SituationId = situationMap[choice.SituationExternalId].Id;
