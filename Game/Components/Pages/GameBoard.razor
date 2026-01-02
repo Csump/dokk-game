@@ -66,7 +66,8 @@
                 <div class="choice-list decision-list">
                     @foreach (var choice in currentSituation.Choices)
                     {
-                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)">
+                        var isChoiceTaken = IsChoiceTaken(choice);
+                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)" disabled="@isChoiceTaken">
                             <div class="shine" />
                             <span class="choice-text">@choice.Text</span>
                         </button>
@@ -78,7 +79,8 @@
                 <div class="choice-list conversation-list">
                     @foreach (var choice in currentSituation.Choices)
                     {
-                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)">
+                        var isChoiceTaken = IsChoiceTaken(choice);
+                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)" disabled="@isChoiceTaken">
                             <div class="shine" />
                             <span class="choice-text">@choice.Text</span>
                         </button>
@@ -147,9 +149,14 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    private bool IsChoiceTaken(Choice choice)
+    {
+        return player?.Decisions?.Any(d => d.ChoiceId == choice.Id) ?? false;
+    }
+
     private async Task HandleChoiceAsync(Choice choice)
     {
-        if (player is null || isProcessing)
+        if (player is null || isProcessing || IsChoiceTaken(choice))
         {
             return;
         }

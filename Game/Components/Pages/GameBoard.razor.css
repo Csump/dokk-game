@@ -140,6 +140,25 @@
         transform: scale(1.01);
     }
 
+
+    .choice-button:disabled {
+        background: transparent;
+        box-shadow: none;
+        transform: scale(1);
+        color: var(--slate-700);
+        opacity: 1!important;
+    }
+
+        .choice-button:disabled .shine {
+            opacity: 0.01;
+        }
+
+        .choice-button:disabled:hover {
+            background: transparent;
+            box-shadow: none;
+            transform: scale(1);
+        }
+
 .choice-text {
     display: flex;
     align-items: center;
