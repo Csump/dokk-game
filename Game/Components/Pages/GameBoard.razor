@@ -3,7 +3,6 @@
 @using Game.Models
 @using Game.Services
 @using Game.Components.Shared
-@using Microsoft.AspNetCore.WebUtilities
 
 @inject GameState GameState
 @inject GameService GameService
@@ -48,11 +47,7 @@
                 }
             </div>
 
-            @if (currentSituation is Minigame)
-            {
-                <MinigamePlaceholder />
-            }
-            else if (currentSituation is Info)
+            @if (currentSituation is Info || currentSituation is Minigame)
             {
                 <div class="continue-wrapper">
                     <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
@@ -100,32 +95,37 @@
 
     private bool HasChoices => currentSituation?.Choices?.Any() == true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await EnsurePlayerAsync();
-        if (player is not null)
+        if (firstRender)
         {
-            await LoadSituationAsync();
+            await EnsurePlayerAsync();
+            if (player is not null)
+            {
+                await LoadSituationAsync();
+            }
+            else
+            {
+                Navigation.NavigateTo("/setup");
+            }
         }
     }
 
     private async Task EnsurePlayerAsync()
     {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("playerId", out var playerIdValue) || !Guid.TryParse(playerIdValue, out var playerId))
+        if (GameState.CurrentPlayer is not null)
         {
-            Navigation.NavigateTo("/setup", true);
+            player = GameState.CurrentPlayer;
             return;
         }
 
-        player = await GameService.GetPlayerAsync(playerId);
-        if (player is null)
+        if (await GameState.RestorePlayerAsync())
         {
-            Navigation.NavigateTo("/setup", true);
+            player = GameState.CurrentPlayer;
             return;
         }
 
-        GameState.SetPlayer(player);
+
     }
 
     private async Task LoadSituationAsync()
@@ -151,13 +151,13 @@
     {
         if (currentSituation is null || currentSituation?.IsHalftime == true)
         {
-            Navigation.NavigateTo($"/results?playerId={player.Id}");
+            Navigation.NavigateTo("/results");
             return;
         }
 
         if (currentSituation?.IsTerminal == true)
         {
-            Navigation.NavigateTo($"/leaderboard?playerId={player.Id}");
+            Navigation.NavigateTo("/leaderboard");
             return;
         }
     }
@@ -174,7 +174,7 @@
         try
         {
             player = await GameService.TakeChoiceAsync(player, choice.Id);
-            GameState.UpdatePlayer(player);
+            await GameState.UpdatePlayerAsync(player);
 
             CheckCheckpoint();
             await LoadSituationAsync();
@@ -198,7 +198,7 @@
         try
         {
             player = await GameService.ProceedAsync(player, currentSituation.Id);
-            GameState.UpdatePlayer(player);
+            await GameState.UpdatePlayerAsync(player);
 
             CheckCheckpoint();
             await LoadSituationAsync();
@@ -214,7 +214,7 @@
     {
         if (player is not null)
         {
-            Navigation.NavigateTo($"/results?playerId={player.Id}");
+            Navigation.NavigateTo("/results");
             StateHasChanged();
         }
     }

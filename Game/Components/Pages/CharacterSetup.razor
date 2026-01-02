@@ -212,8 +212,8 @@
                 CurrentCharacter.Age
             );
 
-            GameState.SetPlayer(player);
-            Navigation.NavigateTo($"/play?playerId={player.Id}", true);
+            await GameState.SetPlayerAsync(player);
+            Navigation.NavigateTo("/play");
         }
         finally
         {

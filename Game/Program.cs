@@ -12,6 +12,7 @@ builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseInMemoryDatabase("GameDb"));
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<GameState>();
+builder.Services.AddScoped<SessionStorageService>();
 
 var app = builder.Build();
 

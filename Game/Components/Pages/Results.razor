@@ -2,7 +2,6 @@
 @rendermode InteractiveServer
 @using Game.Models
 @using Game.Services
-@using Microsoft.AspNetCore.WebUtilities
 
 @inject GameService GameService
 @inject GameState GameState
@@ -57,30 +56,25 @@
     private bool isLoading = true;
     private bool isProcessing;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await EnsurePlayerAsync();
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+        if (firstRender)
+        {
+            await EnsurePlayerAsync();
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task EnsurePlayerAsync()
     {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("playerId", out var playerIdValue) || !Guid.TryParse(playerIdValue, out var playerId))
+        if (!await GameState.RestorePlayerAsync())
         {
             Navigation.NavigateTo("/setup", true);
             return;
         }
 
-        player = await GameService.GetPlayerAsync(playerId);
-        if (player is null)
-        {
-            Navigation.NavigateTo("/setup", true);
-            return;
-        }
-
-        GameState.SetPlayer(player);
+        player = GameState.CurrentPlayer;
     }
 
     private async Task ContinueAsync()
@@ -99,8 +93,8 @@
             if (currentSituation?.NextSituationId is not null)
             {
                 player = await GameService.ContinueFromHalftimeAsync(player, currentSituation.NextSituationId.Value);
-                GameState.UpdatePlayer(player);
-                Navigation.NavigateTo($"/play?playerId={player.Id}");
+                await GameState.UpdatePlayerAsync(player);
+                Navigation.NavigateTo("/play");
             }
         }
         finally

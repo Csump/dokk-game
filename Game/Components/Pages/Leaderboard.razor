@@ -5,6 +5,7 @@
 
 @inject GameService GameService
 @inject GameState GameState
+@inject NavigationManager Navigation
 
 <PageTitle>Rangsor</PageTitle>
 
@@ -24,7 +25,7 @@
         </section>
 
         <section class="ranking">
-            @foreach (var (entry, index) in entries.Select((value, idx) => (value, idx + 1)))
+            @foreach (var (entry, index) in GetFilteredLeaderboard())
             {
                 var isCurrent = GameState.CurrentPlayer?.Id == entry.Id;
                 <div class="rank-chip @(isCurrent ? "current-player" : "") @(index == 1 ? "first" : "")">
@@ -62,12 +63,56 @@
     private readonly List<Player> entries = new();
     private bool isLoading = true;
 
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        entries.Clear();
-        entries.AddRange(await GameService.GetLeaderboardAsync());
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+        if (firstRender)
+        {
+            await EnsurePlayerAsync();
+            entries.Clear();
+            entries.AddRange(await GameService.GetLeaderboardAsync());
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task EnsurePlayerAsync()
+    {
+        if (!await GameState.RestorePlayerAsync())
+        {
+            Navigation.NavigateTo("/setup", true);
+            return;
+        }
+    }
+
+    private IEnumerable<(Player entry, int index)> GetFilteredLeaderboard()
+    {
+        if (GameState.CurrentPlayer == null || entries.Count == 0)
+            return Enumerable.Empty<(Player, int)>();
+
+        var currentPlayerIndex = entries.FindIndex(p => p.Id == GameState.CurrentPlayer.Id);
+        if (currentPlayerIndex == -1)
+            return entries.Select((p, i) => (p, i + 1));
+
+        var indicesToShow = new HashSet<int>();
+
+        indicesToShow.Add(0);
+
+        indicesToShow.Add(currentPlayerIndex);
+
+        for (int i = Math.Max(0, currentPlayerIndex - 2); i < currentPlayerIndex; i++)
+        {
+            indicesToShow.Add(i);
+        }
+
+        for (int i = currentPlayerIndex + 1; i <= Math.Min(entries.Count - 1, currentPlayerIndex + 2); i++)
+        {
+            indicesToShow.Add(i);
+        }
+
+        return indicesToShow
+            .OrderBy(i => i)
+            .Select(i => (entries[i], i + 1));
     }
 }
 
