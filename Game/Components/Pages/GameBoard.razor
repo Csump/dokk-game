@@ -35,12 +35,14 @@
                 <img src="@currentSituation.IllustrationUrl" alt="Illusztráció" class="situation-illustration" />
 			}
 
-            <p class="title">@currentSituation.Title</p>
+            <div class="situation-text">
+                <p class="title">@currentSituation.Title</p>
 
-			@if (currentSituation.Text is not null && currentSituation.Text.Length > 0)
-            {
-                <p class="text">@currentSituation.Text</p>
-			}
+                @if (currentSituation.Text is not null && currentSituation.Text.Length > 0)
+                {
+                    <p class="text">@currentSituation.Text</p>
+                }
+            </div>
 
             @if (currentSituation is Minigame)
             {
@@ -57,7 +59,7 @@
             }
             else if (currentSituation is Decision)
             {
-                <div class="choice-list">
+                <div class="choice-list decision-list">
                     @foreach (var choice in currentSituation.Choices)
                     {
                         <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)">
@@ -69,7 +71,15 @@
             }
             else if (currentSituation is Conversation)
             {
-                <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
+                <div class="choice-list conversation-list">
+                    @foreach (var choice in currentSituation.Choices)
+                    {
+                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)">
+                            <div class="shine" />
+                            <span class="choice-text">@choice.Text</span>
+                        </button>
+                    }
+                </div>
             }
             else
             {
