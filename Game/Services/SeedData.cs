@@ -72,6 +72,8 @@ public static class SeedData
             s.Title = c[1];
             s.Text = c[2];
             s.IllustrationUrl = c[3];
+            // TODO: remove placeholder
+            s.IllustrationUrl = "_placeholder.jpeg";
             s.IsStarter = bool.Parse(c[4]);
             s.IsHalftime = bool.Parse(c[5]);
             s.IsTerminal = bool.Parse(c[6]);
