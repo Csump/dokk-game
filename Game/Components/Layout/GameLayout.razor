@@ -13,11 +13,6 @@
     <img id="main-logo-button" src="src/Assets/logo.svg" alt="ELTE DOKK logo" />
 </a>
 
-@if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
-{
-    <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
-}
-
 @Body
 
 @code {

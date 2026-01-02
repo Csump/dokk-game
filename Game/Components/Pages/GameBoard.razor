@@ -8,9 +8,13 @@
 @inject GameState GameState
 @inject GameService GameService
 @inject NavigationManager Navigation
-@inject ILogger<GameBoard> Logger
 
 <PageTitle>Gameplay</PageTitle>
+
+@if (GameState.HasActiveSession && GameState.CurrentPlayer is not null)
+{
+    <PlayerStatsBar Stats="@GameState.CurrentPlayer.Stats" />
+}
 
 <div class="main-container">
     @if (player is null)
@@ -168,6 +172,7 @@
         finally
         {
             isProcessing = false;
+            StateHasChanged();
         }
     }
 
@@ -202,6 +207,7 @@
         finally
         {
             isProcessing = false;
+            StateHasChanged();
         }
     }
 
@@ -210,6 +216,7 @@
         if (player is not null)
         {
             Navigation.NavigateTo($"/results?playerId={player.Id}");
+            StateHasChanged();
         }
     }
 }
