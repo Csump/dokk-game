@@ -17,6 +17,7 @@
     backdrop-filter: blur(25px);
     border-radius: 17px 17px 0 0;
     user-select: none;
+    z-index: 999;
 }
 
 .player-stat {
