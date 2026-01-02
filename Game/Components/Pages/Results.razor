@@ -2,103 +2,110 @@
 @rendermode InteractiveServer
 @using Game.Models
 @using Game.Services
-@using Game.Components.Shared
 @using Microsoft.AspNetCore.WebUtilities
 
-@inject GameState GameState
 @inject GameService GameService
+@inject GameState GameState
 @inject NavigationManager Navigation
 
-<PageTitle>Értékelés</PageTitle>
+<PageTitle>Félidő</PageTitle>
 
-@if (player is null)
-{
-    <div class="alert alert-info">
-        Még nem fejezted be a játékot. <a href="/">Kezdj meg egyet!</a>
-    </div>
-}
-else
-{
-    <section class="mb-4">
-        <h1 class="mb-3">Szép munka, @DisplayName!</h1>
-        <p class="lead text-muted">Íme az értékelésed. Tartsd szemmel a ranglistát, hogy lásd, hogyan teljesítettél a többiekhez képest!</p>
-    </section>
+<div class="main-container">
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border"></div>
+            <p>Dobpergés...</p>
+        </div>
+    }
+    else if (GameState.CurrentPlayer is not null)
+    {
+        <section class="summary">
+            <h1>Gratulálunk!</h1>
+            <p>A játék felénél jársz. Vettük a fáradságot, és eddigi fáradozásaidat kiértékeltük, hogy lásd, hogyan teljesítettél eddig.</p>
+        </section>
 
-    <div class="row gy-4 mb-4">
-        <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5 mb-3">Statok</h2>
-                    <PlayerStatsBar Stats="Player.Stats" />
-                    <div class="mt-3">
-                        <span class="badge bg-primary fs-6">Összpontszám: @Player.TotalScore</span>
+        <section class="stat-evaluation">
+            @foreach (var stat in GameState.CurrentPlayer!.Stats.AsDictionary())
+            {
+                var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
+                var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
+
+                <div class="evaluation-card">
+                    <div class="@cssClass">
+                        <div class="shine" />
+                        <img src="@iconPath" class="stat-icon" />
+                        <span class="value">@stat.Value.Value</span>
                     </div>
+                    <h3>@stat.Key</h3>
+                    <p>A kreativitás területén kevés pontot gyűjtöttél, ami arra utalhat, hogy hajlamos vagy a dolgokat inkább egy, már ismert módon megközelíteni. Ennek hátrányát leggyakrabban akkor érezheted, amikor valami kizökkent a megszokottból, az oktatási gyakorlatodban korlátozva érzed magad, esetleg túlzott energiát követel tőled vagy egyenesen lehetetlennek tűnik számodra valami. Érdemes megfigyelni, hogy mások milyen megoldásokat alkalmaznak hasonló helyzetekre; esetleg megosztani az ötleteidet olyanokkal, akik új perspektívából inspirálhatnak; illetve azonosítani önmagadban azokat a színtereket, akár hétköznapi példákat, ahol kreatívnak érzed magad.</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5 mb-3">Értékelés</h2>
-                    <p class="text-muted">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                        Fusce at est at nunc ultrices dapibus sit amet vel justo.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+            }
+        </section>
 
-    <div class="d-flex flex-wrap gap-3">
-        <button class="btn btn-outline-primary" @onclick="NavigateToLeaderboard">Rangsor</button>
-    </div>
-}
+        <div class="continue-wrapper">
+            <button class="fancy-light" type="button" @onclick="ContinueAsync" disabled="@isProcessing">
+                <div class="shine" />
+                @(isProcessing ? "Máris..." : "Tovább →")
+            </button>
+        </div>
+    }
+</div>
 
 @code {
     private Player? player;
-
-    private Player Player => player!;
-
-    private string DisplayName => string.IsNullOrWhiteSpace(Player.Username)
-        ? "Adventurer"
-        : Player.Username!;
+    private bool isLoading = true;
+    private bool isProcessing;
 
     protected override async Task OnInitializedAsync()
     {
         await EnsurePlayerAsync();
-        if (player is null)
-        {
-            return;
-        }
-
-        if (Player.CompletedAt is null)
-        {
-            await GameService.CompleteRunAsync(Player);
-            GameState.UpdatePlayer(Player);
-        }
+        isLoading = false;
+        await InvokeAsync(StateHasChanged);
     }
-
-    private void Restart()
-    {
-        GameState.Clear();
-        Navigation.NavigateTo("/setup", true);
-    }
-
-    private void NavigateToLeaderboard() => Navigation.NavigateTo("/leaderboard");
 
     private async Task EnsurePlayerAsync()
     {
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
         if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("playerId", out var playerIdValue) || !Guid.TryParse(playerIdValue, out var playerId))
         {
+            Navigation.NavigateTo("/setup", true);
             return;
         }
 
         player = await GameService.GetPlayerAsync(playerId);
-        if (player is not null)
+        if (player is null)
         {
-            GameState.SetPlayer(player);
+            Navigation.NavigateTo("/setup", true);
+            return;
+        }
+
+        GameState.SetPlayer(player);
+    }
+
+    private async Task ContinueAsync()
+    {
+        if (player is null || isProcessing)
+        {
+            return;
+        }
+
+        isProcessing = true;
+
+        try
+        {
+            var currentSituation = await GameService.GetCurrentSituationAsync(player);
+
+            if (currentSituation?.NextSituationId is not null)
+            {
+                player = await GameService.ContinueFromHalftimeAsync(player, currentSituation.NextSituationId.Value);
+                GameState.UpdatePlayer(player);
+                Navigation.NavigateTo($"/play?playerId={player.Id}");
+            }
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 }
-
