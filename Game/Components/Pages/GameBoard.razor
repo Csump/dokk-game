@@ -8,6 +8,7 @@
 @inject GameState GameState
 @inject GameService GameService
 @inject NavigationManager Navigation
+@inject ILogger<GameBoard> Logger
 
 <PageTitle>Gameplay</PageTitle>
 
@@ -29,7 +30,7 @@
     {
         <div class="situation" Situation="@currentSituation">
 
-            @if (currentSituation.IllustrationUrl is not null)
+            @if (currentSituation.IllustrationUrl is not null && currentSituation.IllustrationUrl.Length > 0)
             {
                 <img src="@currentSituation.IllustrationUrl" alt="Illusztráció" class="situation-illustration" />
 			}
@@ -47,14 +48,24 @@
             }
             else if (currentSituation is Info)
             {
-                <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
-                    <div class="shine" />
-                    @(isProcessing ? "Máris..." : "Tovább →")
-                </button>
+                <div class="continue-wrapper">
+                    <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
+                        <div class="shine" />
+                        @(isProcessing ? "Máris..." : "Tovább →")
+                    </button>
+                </div>
             }
             else if (currentSituation is Decision)
             {
-                <ChoiceList Choices="currentSituation.Choices" OnChoice="HandleChoiceAsync" />
+                <div class="choice-list">
+                    @foreach (var choice in currentSituation.Choices)
+                    {
+                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)">
+                            <div class="shine" />
+                            <span class="choice-text">@choice.Text</span>
+                        </button>
+                    }
+                </div>
             }
             else if (currentSituation is Conversation)
             {
@@ -164,13 +175,19 @@
             player = await GameService.ProceedAsync(player, currentSituation.Id);
             GameState.UpdatePlayer(player);
 
-            if (currentSituation.NextSituationId == Guid.Empty || currentSituation?.IsTerminal == true || player.CurrentSituationId == Guid.Empty)
+            if (player.CurrentSituationId == Guid.Empty)
             {
                 Navigation.NavigateTo($"/results?playerId={player.Id}");
                 return;
             }
 
             await LoadSituationAsync();
+            
+            if (currentSituation?.IsTerminal == true)
+            {
+                Navigation.NavigateTo($"/results?playerId={player.Id}");
+                return;
+            }
         }
         finally
         {
