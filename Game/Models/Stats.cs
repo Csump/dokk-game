@@ -30,15 +30,28 @@ public class Stats
     
     public static Stats GetDefault(Level level, Gender gender, Age age)
     {
-        int baseVal = level switch
+        switch (gender, age)
         {
-            Level.Doktorandusz => 40,
-            Level.Docens => 55,
-            Level.Adjunktus => 65,
-            _ => 50
-        };
+            // Zsófia
+            case (Gender.Female, Age.Young):
+                return new Stats(48, 0, 5, 5, 3, 4, 3);
 
-        return new Stats(baseVal, baseVal, baseVal, baseVal, baseVal, baseVal, baseVal);
+            // Gabriella
+            case (Gender.Female, Age.Old):
+                return new Stats(46, 0, 3, 5, 4, 5, 3);
+
+            // Máté
+            case (Gender.Male, Age.Young):
+                return new Stats(50, 0, 4, 3, 5, 3, 5);
+            
+            // Iván
+            case (Gender.Male, Age.Old):
+                return new Stats(44, 0, 5, 3, 3, 5, 4);
+
+            default:
+                int baseVal = 5;
+                return new Stats(baseVal, baseVal, baseVal, baseVal, baseVal, baseVal, baseVal);
+        }
     }
 
     public void ApplyDelta(Stats delta)
@@ -54,15 +67,15 @@ public class Stats
 
     public int Total => Energy + Success + SelfReflection + Creativity + Cooperation + Competency + Initiative;
 
-    public IReadOnlyDictionary<string, (string Canonical, int Value)> AsDictionary() => new Dictionary<string, (string, int)>
+    public IReadOnlyDictionary<string, (string Canonical, int Value, StatType Type)> AsDictionary() => new Dictionary<string, (string, int, StatType)>
     {
-        ["Energia"] = ("Energy", Energy),
-        ["Hallgatói motiváció"] = ("Success", Success),
-        ["Önreflexió"] = ("SelfReflection", SelfReflection),
-        ["Kreativitás"] = ("Creativity", Creativity),
-        ["Együttműködés"] = ("Cooperation", Cooperation),
-        ["Felkészültség"] = ("Competency", Competency),
-        ["Kezdeményezőkészség"] = ("Initiative", Initiative)
+        ["Energia"] = ("Energy", Energy, StatType.Energy),
+        ["Hallgatói motiváció"] = ("Success", Success, StatType.Success),
+        ["Önreflexió"] = ("SelfReflection", SelfReflection, StatType.SelfReflection),
+        ["Kreativitás"] = ("Creativity", Creativity, StatType.Creativity),
+        ["Együttműködés"] = ("Cooperation", Cooperation, StatType.Cooperation),
+        ["Felkészültség"] = ("Competency", Competency, StatType.Competency),
+        ["Kezdeményezőkészség"] = ("Initiative", Initiative, StatType.Initiative)
     };
 
     private int Clamp(int value) => Math.Clamp(value, MIN_LEVEL, MAX_LEVEL);

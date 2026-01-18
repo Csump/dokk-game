@@ -18,3 +18,21 @@ public enum Level
     Docens,
     Adjunktus
 }
+
+public enum EvaluationLevel
+{
+    Bad,
+    Average,
+    Good
+}
+
+public enum StatType
+{
+    Energy,
+    Success,
+    SelfReflection,
+    Creativity,
+    Cooperation,
+    Competency,
+    Initiative
+}

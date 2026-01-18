@@ -25,20 +25,23 @@
         </section>
 
         <section class="stat-evaluation">
-            @foreach (var stat in GameState.CurrentPlayer!.Stats.AsDictionary())
+            @foreach (KeyValuePair<string, (string Canonical, int Value, StatType Type)> stat in GameState.CurrentPlayer!.Stats.AsDictionary())
             {
-                var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
-                var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
+                @if (stat.Value.Type != StatType.Energy && stat.Value.Type != StatType.Success)
+                {
+                    var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
+                    var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
 
-                <div class="evaluation-card">
-                    <div class="@cssClass">
-                        <div class="shine" />
-                        <img src="@iconPath" class="stat-icon" />
-                        <span class="value">@stat.Value.Value</span>
+                    <div class="evaluation-card">
+                        <div class="@cssClass">
+                            <div class="shine" />
+                            <img src="@iconPath" class="stat-icon" />
+                            <span class="value">@stat.Value.Value</span>
+                        </div>
+                        <h3>@stat.Key</h3>
+                        <p>@GetStatEvaluationText(stat)</p>
                     </div>
-                    <h3>@stat.Key</h3>
-                    <p>A kreativitás területén kevés pontot gyűjtöttél, ami arra utalhat, hogy hajlamos vagy a dolgokat inkább egy, már ismert módon megközelíteni. Ennek hátrányát leggyakrabban akkor érezheted, amikor valami kizökkent a megszokottból, az oktatási gyakorlatodban korlátozva érzed magad, esetleg túlzott energiát követel tőled vagy egyenesen lehetetlennek tűnik számodra valami. Érdemes megfigyelni, hogy mások milyen megoldásokat alkalmaznak hasonló helyzetekre; esetleg megosztani az ötleteidet olyanokkal, akik új perspektívából inspirálhatnak; illetve azonosítani önmagadban azokat a színtereket, akár hétköznapi példákat, ahol kreatívnak érzed magad.</p>
-                </div>
+                }
             }
         </section>
 
@@ -101,5 +104,19 @@
         {
             isProcessing = false;
         }
+    }
+
+    private string GetStatEvaluationText(KeyValuePair<string, (string Canonical, int Value, StatType Type)> stat)
+    {
+        switch (stat.Value.Value)
+        {
+            case < 4:
+                return Evaluation.GetEvaluation(stat.Value.Type, EvaluationLevel.Bad);
+            case >= 6:
+                return Evaluation.GetEvaluation(stat.Value.Type, EvaluationLevel.Good);
+            default:
+                return Evaluation.GetEvaluation(stat.Value.Type, EvaluationLevel.Average);
+        }
+        ;
     }
 }
