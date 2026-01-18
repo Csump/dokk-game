@@ -1,0 +1,58 @@
+﻿.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 100px;
+    isolation: isolate;
+    position: relative;
+    background: linear-gradient(0deg, var(--powder-600) 0%, var(--powder-700) 100%);
+    overflow-y: scroll;
+}
+
+.mail-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: flex-start;
+    margin: auto;
+
+    padding: 50px;
+    background: var(--powder-800);
+    width: 100%;
+    max-width: 650px;
+
+    border-width: 2px 2px 4px 2px;
+    border-style: solid;
+    border-color: var(--powder-50);
+    box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.15), 0px -3px 15px rgba(255, 255, 255, 0.07), 0px -15px 50px rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+
+    flex: none;
+    flex-grow: 0;
+}
+
+    .mail-container p {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        padding: 0;
+        gap: 35px;
+        flex: none;
+        order: 0;
+        align-self: center;
+        flex-grow: 0;
+    }
+
+.mail-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.continue-wrapper {
+    position: absolute;
+    right: 106px;
+    bottom: 40px;
+}
