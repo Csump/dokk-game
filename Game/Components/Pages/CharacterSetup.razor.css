@@ -188,7 +188,27 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+
+    width: 50px;
+    height: 50px;
+    color: var(--powder-900);
+    background: var(--powder-50);
+    border-radius: 50px;
+    font-size: 25px;
+    font-weight: 800;
+    padding: 0;
+    margin: 0;
 }
+
+    .arrow-button:hover {
+        transform: translateY(-50%) scale(1.05);
+        background: var(--powder-50);
+    }
+
+    .arrow-button:active {
+        transform: translateY(-50%);
+        background: var(--powder-50);
+    }
 
 .left {
     left: 6%;

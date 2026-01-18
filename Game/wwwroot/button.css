@@ -36,11 +36,12 @@
     button:enabled:hover {
         background: rgb(248, 250, 249, 0.05);
         transform: scale(1.02);
-        cursor: pointer;
+        cursor: url(src/Cursors/hand-pointing.svg), pointer;
     }
 
     button:enabled:active {
         transform: scale(0.99);
+        cursor: url(src/Cursors/hand-pressing.svg), pointer;
     }
 
 .fancy-dark {

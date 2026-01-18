@@ -34,13 +34,13 @@
     <div class="character-info">
         <div class="character-title">
             <p class="character-name">@CurrentCharacter.Name</p>
-            <p class="character-quote">„@CurrentCharacter.Quote"</p>
+            <p class="character-quote">„@CurrentCharacter.Quote”</p>
         </div>
 
         <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
     </div>
 
-    <button type="button" class="fancy-light arrow-button left" @onclick="PrevCharacter">
+    <button type="button" class="arrow-button left" @onclick="PrevCharacter">
         ←
     </button>
 
@@ -48,7 +48,7 @@
 
     <img class="character-image" src="@CurrentCharacter.ImageUrl" alt="Karakterillusztráció" />
 
-    <button type="button" class="fancy-light arrow-button right" @onclick="NextCharacter">
+    <button type="button" class="arrow-button right" @onclick="NextCharacter">
         →
     </button>
 
@@ -81,7 +81,7 @@
                                placeholder="Írd ide a neved..."
                                maxlength="32"
                                @oninput="OnUsernameInput"
-                               style="box-sizing: border-box; width: 100%; padding: 10px 20px; background: var(--powder-50); border: 1px solid var(--cobalt-500); box-shadow: 0px 5px 0px var(--cobalt-500); border-radius: 15px; font-weight: 600; font-size: 1.2em; margin-bottom: 5px;" />
+                               style="box-sizing: border-box; width: 100%; padding: 10px 20px; background: var(--powder-50); border: 1px solid var(--cobalt-500); box-shadow: 0px 5px 0px var(--cobalt-500); border-radius: 15px; font-weight: 600; font-size: 1.2em; margin-bottom: 5px; cursor: url(src/Cursors/cursor-text.svg), text;" />
                     <div class="validation-message-container">
                         <ValidationMessage For="@(() => _model.Username)" />
                     </div>
