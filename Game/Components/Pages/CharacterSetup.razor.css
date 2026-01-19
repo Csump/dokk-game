@@ -185,6 +185,7 @@
 }
 
 .arrow-button {
+    font-family: 'Inter', sans-serif;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -206,7 +207,7 @@
     }
 
     .arrow-button:active {
-        transform: translateY(-50%);
+        transform: translateY(-50%) scale(.97);
         background: var(--powder-50);
     }
 

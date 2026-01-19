@@ -8,7 +8,6 @@
     gap: 100px;
     overflow-y: auto;
     overflow-x: hidden;
-    width: calc(100vw - 300px);
 }
 
 .summary {

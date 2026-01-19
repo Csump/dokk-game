@@ -15,7 +15,7 @@
     align-items: center;
     padding: 100px 700px 100px 150px;
 
-    max-width: 1000px;
+    width: 100%;
     
     flex: none;
     order: 2;
