@@ -5,13 +5,21 @@
     <section class="player-stats-bar">
         @foreach (var stat in Stats.AsDictionary())
         {
-            var iconPath = $"src/Icons/{stat.Value.Canonical.ToLower()}.png";
-            var cssClass = $"player-stat stat-{stat.Value.Canonical.ToLower()}";
+            var canonical = stat.Value.Canonical.ToLower();
+            var iconPath = $"src/Icons/{canonical}.png";
+            var cssClass = $"player-stat stat-{canonical}";
+
+            var arrow = GetArrow(stat.Value.Canonical);
 
             <div class="@cssClass">
                 <div class="shine" />
                 <img src="@iconPath" class="stat-icon" />
                 <span class="value">@stat.Value.Value</span>
+
+                @if (arrow is not null)
+                {
+                    <img src="@arrow" class="stat-arrow" />
+                }
 
                 <div class="tooltip tooltip-top">
                     @stat.Key
@@ -24,5 +32,53 @@
 @code {
     [Parameter]
     public Stats? Stats { get; set; }
+
+    private Dictionary<string, int> _previousValues = new();
+    private Dictionary<string, int> _deltas = new();
+
+    protected override void OnParametersSet()
+    {
+        if (Stats is null) return;
+
+        var current = Stats.AsDictionary()
+            .ToDictionary(s => s.Value.Canonical, s => s.Value.Value);
+
+        if (_previousValues.Count == 0)
+        {
+            _previousValues = current;
+            return;
+        }
+
+        foreach (var (key, value) in current)
+        {
+            if (_previousValues.TryGetValue(key, out var prev))
+            {
+                if (prev != value)
+                {
+                    _deltas[key] = value - prev;
+                    _ = ClearDeltaAfterDelay(key);
+                }
+            }
+        }
+
+        _previousValues = current;
+    }
+
+    private string? GetArrow(string canonical)
+    {
+        if (!_deltas.TryGetValue(canonical, out var delta))
+            return null;
+
+        return delta > 0
+            ? "src/Icons/arrow-increase.svg"
+            : "src/Icons/arrow-decrease.svg";
+    }
+
+    private async Task ClearDeltaAfterDelay(string key)
+    {
+        await Task.Delay(800);
+        _deltas.Remove(key);
+        await InvokeAsync(StateHasChanged);
+    }
 }
 
