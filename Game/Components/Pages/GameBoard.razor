@@ -33,9 +33,12 @@
     {
         <div class="situation" Situation="@currentSituation">
 
-            @if (currentSituation.IllustrationUrl is not null && currentSituation.IllustrationUrl.Length > 0)
+            @if (!string.IsNullOrWhiteSpace(currentSituation.IllustrationUrl))
             {
-                <img src="./src/Situations/@currentSituation.IllustrationUrl" alt="Illusztráció" class="situation-illustration" />
+                <img src="./src/Situations/@currentSituation.IllustrationUrl"
+                     alt="Illusztráció"
+                     class="situation-illustration"
+                     onerror="this.onerror=null; this.src='./src/Situations/hedgie_terulo.png';" />
 			}
 
             <div class="situation-text">
