@@ -133,7 +133,6 @@
     margin-bottom: 350px;
     gap: 45px 15px;
     width: 100%;
-    max-width: 1500px;
     filter: drop-shadow(0px 12px 75px rgba(0, 0, 0, 0.15));
     flex: none;
     align-self: stretch;
