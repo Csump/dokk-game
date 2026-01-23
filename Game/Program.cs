@@ -1,18 +1,16 @@
 using Game.Components;
 using Game.Data;
+using Game.Models;
 using Game.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<GameDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-builder.Services.AddDbContext<GameDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
 
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<GameState>();
@@ -25,9 +23,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
     
-    db.Database.Migrate();
-   
-    SeedData.Initialize(db, env);
+    //db.Database.Migrate();
 }
 
 if (!app.Environment.IsDevelopment())
