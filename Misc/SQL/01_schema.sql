@@ -47,7 +47,9 @@ CREATE TABLE players (
     creativity INTEGER DEFAULT 0,
     cooperation INTEGER DEFAULT 0,
     motivation INTEGER DEFAULT 0,
-    current_situation_id INTEGER REFERENCES situations(id)
+    current_situation_id INTEGER REFERENCES situations(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP NULL
 );
 
 CREATE TABLE decisions (
