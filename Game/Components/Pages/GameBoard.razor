@@ -50,7 +50,7 @@
                 }
             </div>
 
-            @if (currentSituation is Info || currentSituation is Minigame)
+            @if (currentSituation.Type == SituationType.Info || currentSituation.Type == SituationType.Minigame)
             {
                 <div class="continue-wrapper">
                     <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
@@ -59,7 +59,7 @@
                     </button>
                 </div>
             }
-            else if (currentSituation is Decision)
+            else if (currentSituation.Type == SituationType.Decision)
             {
                 <div class="choice-list decision-list">
                     @foreach (var choice in currentSituation.Choices)
@@ -72,7 +72,7 @@
                     }
                 </div>
             }
-            else if (currentSituation is Conversation)
+            else if (currentSituation.Type == SituationType.Conversation)
             {
                 <div class="choice-list conversation-list">
                     @foreach (var choice in currentSituation.Choices)
