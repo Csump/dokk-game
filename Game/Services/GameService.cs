@@ -21,14 +21,14 @@ public class GameService
             return false;
         }
 
-        var normalized = username.Trim();
+        var normalized = username.Trim().ToLower();
 
         return !await _context.Players
             .AnyAsync(p => p.Username != null &&
-                           p.Username.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase));
+                           p.Username.Trim().ToLower() == normalized);
     }
 
-    public async Task<Player> CreatePlayerAsync(string username, Level level, Gender gender, Age age)
+    public async Task<Player> CreatePlayerAsync(string username, PlayerLevel level, Gender gender, Age age)
     {
         username = username?.Trim() ?? string.Empty;
 
