@@ -4,11 +4,11 @@ input_csv = '../CSV/situations.csv'
 output_sql = '../SQL/02_data-situations.sql'
 
 type_map = {
-    'Infó': 'Info',
-    'Párbeszéd': 'Conversation',
-    'Döntés': 'Decision',
-    'Minijáték': 'Minigame',
-    'Spéci': 'Special'
+    'Infó': 1,
+    'Párbeszéd': 2,
+    'Döntés': 3,
+    'Minijáték': 4,
+    'Spéci': 5
 }
 
 def sql_value(val):
@@ -31,7 +31,7 @@ with open(input_csv, newline='', encoding='utf-8') as csvfile:
     for row in reader:
         row = (row + [''] * 9)[:9]
         if len(row) > 7 and row[7] in type_map: # Map situation type
-            row[7] = type_map[row[7]]
+            row[7] = str(type_map[row[7]])
         values = [sql_value(col) for col in row]
         records.append(f"({', '.join(values)})")
 
