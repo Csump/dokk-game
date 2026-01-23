@@ -1,6 +1,5 @@
 using Game.Components;
 using Game.Data;
-using Game.Models;
 using Game.Services;
 using Microsoft.EntityFrameworkCore;
 
