@@ -27,7 +27,7 @@ public class Stats
     }
 
     public Stats() { }
-    
+
     public static Stats GetDefault(PlayerLevel level, Gender gender, Age age)
     {
         switch (gender, age)
@@ -43,7 +43,7 @@ public class Stats
             // Máté
             case (Gender.Male, Age.Young):
                 return new Stats(50, 0, 4, 3, 5, 3, 5);
-            
+
             // Iván
             case (Gender.Male, Age.Old):
                 return new Stats(44, 0, 5, 3, 3, 5, 4);

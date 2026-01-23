@@ -11,7 +11,7 @@ public class GameDbContext : DbContext
     public DbSet<Situation> Situations => Set<Situation>();
     public DbSet<Choice> Choices => Set<Choice>();
     public DbSet<DecisionLog> Decisions => Set<DecisionLog>();
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Player table mapping
@@ -23,7 +23,7 @@ public class GameDbContext : DbContext
             entity.Property(e => e.CurrentSituationId).HasColumnName("current_situation_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
-            
+
             entity.OwnsOne(p => p.Type, type =>
             {
                 type.Property(t => t.Gender)
@@ -31,18 +31,18 @@ public class GameDbContext : DbContext
                     .HasConversion(
                         g => g == Gender.Male,
                         b => b ? Gender.Male : Gender.Female);
-                
+
                 type.Property(t => t.Age)
                     .HasColumnName("is_old")
                     .HasConversion(
                         a => a == Age.Old,
                         b => b ? Age.Old : Age.Young);
-                
+
                 type.Property(t => t.Level)
                     .HasColumnName("level")
                     .HasConversion<int>();
             });
-            
+
             entity.OwnsOne(p => p.Stats, stats =>
             {
                 stats.Property(s => s.Energy).HasColumnName("energy").HasDefaultValue(0);
@@ -63,7 +63,7 @@ public class GameDbContext : DbContext
             entity.Property(e => e.PlayerId).HasColumnName("player_id");
             entity.Property(e => e.ChoiceId).HasColumnName("choice_id");
             entity.Property(e => e.TakenAt).HasColumnName("timestamp");
-            
+
             entity.HasOne<Player>()
                 .WithMany(p => p.Decisions)
                 .HasForeignKey(d => d.PlayerId);
@@ -94,7 +94,7 @@ public class GameDbContext : DbContext
             entity.Property(e => e.SituationId).HasColumnName("situation_id");
             entity.Property(e => e.Text).HasColumnName("choice_text");
             entity.Property(e => e.NextSituationId).HasColumnName("next_situation_id");
-            
+
             entity.OwnsOne(c => c.DeltaStats, stats =>
             {
                 stats.Property(s => s.Energy).HasColumnName("delta_energy");
