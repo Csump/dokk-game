@@ -8,5 +8,5 @@ public class DecisionLog
     public int Id { get; set; }
     public int PlayerId { get; set; }
     public int ChoiceId { get; set; }
-    public DateTime TakenAt { get; set; } = DateTime.Now;
+    public DateTime TakenAt { get; set; } = DateTime.UtcNow;
 }
