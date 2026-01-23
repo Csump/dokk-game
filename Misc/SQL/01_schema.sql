@@ -1,10 +1,5 @@
 BEGIN;
 
-drop type if exists situation_type_enum;
-
-CREATE TYPE situation_type_enum AS ENUM ('Info', 'Decision', 'Minigame', 'Conversation', 'Special');
-CREATE TYPE player_level AS ENUM ('Doktorandusz', 'Docens', 'Adjunktus');
-
 drop table if exists choices;
 drop table if exists situations;
 
@@ -16,7 +11,7 @@ CREATE TABLE situations (
     is_starter BOOLEAN DEFAULT FALSE,
     is_halftime BOOLEAN DEFAULT FALSE,
     is_terminal BOOLEAN DEFAULT FALSE,
-    situation_type situation_type_enum,
+    situation_type INTEGER,
     next_situation_id INTEGER -- Will add FK constraint in 03_constraints
 );
 
@@ -39,7 +34,7 @@ CREATE TABLE players (
     name TEXT NOT NULL,
     is_male BOOLEAN,
     is_old BOOLEAN,
-    level player_level,
+    level INTEGER,
     energy INTEGER DEFAULT 0,
     selfreflection INTEGER DEFAULT 0,
     competency INTEGER DEFAULT 0,
