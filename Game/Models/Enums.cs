@@ -14,9 +14,9 @@ public enum Age
 
 public enum PlayerLevel
 {
-    Doktorandusz,
-    Docens,
-    Adjunktus
+    Doktorandusz = 1,
+    Docens = 2,
+    Adjunktus = 3
 }
 
 public enum EvaluationLevel
@@ -35,4 +35,13 @@ public enum StatType
     Cooperation,
     Competency,
     Initiative
+}
+
+public enum SituationType
+{
+    Info = 1,
+    Conversation = 2,
+    Decision = 3,
+    Minigame = 4,
+    Special = 5
 }
