@@ -12,7 +12,7 @@ public enum Age
     Old
 }
 
-public enum Level
+public enum PlayerLevel
 {
     Doktorandusz,
     Docens,

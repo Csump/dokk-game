@@ -28,7 +28,7 @@ public class Stats
 
     public Stats() { }
     
-    public static Stats GetDefault(Level level, Gender gender, Age age)
+    public static Stats GetDefault(PlayerLevel level, Gender gender, Age age)
     {
         switch (gender, age)
         {

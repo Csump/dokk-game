@@ -20,7 +20,7 @@
         <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
 
         <div class="level-selector">
-            @foreach (var level in Enum.GetValues<Level>())
+            @foreach (var level in Enum.GetValues<PlayerLevel>())
             {
                 <button type="button"
                         class="@(_model.Level == level ? "fancy-dark" : "")"
@@ -237,14 +237,14 @@
         public Age Age { get; set; } = Age.Young;
 
         [Required]
-        public Level Level { get; set; } = Level.Doktorandusz;
+        public PlayerLevel Level { get; set; } = PlayerLevel.Doktorandusz;
 
         public void Reset()
         {
             Username = string.Empty;
             Gender = Gender.Male;
             Age = Age.Young;
-            Level = Level.Doktorandusz;
+            Level = PlayerLevel.Doktorandusz;
         }
     }
 }
