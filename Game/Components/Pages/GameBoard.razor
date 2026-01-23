@@ -59,7 +59,7 @@
                     </button>
                 </div>
             }
-            else if (currentSituation.Type == SituationType.Decision)
+            else if (currentSituation.Type == SituationType.Decision || currentSituation.Type == SituationType.Special)
             {
                 <div class="choice-list decision-list">
                     @foreach (var choice in currentSituation.Choices)
