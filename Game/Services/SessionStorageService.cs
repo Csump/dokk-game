@@ -12,12 +12,12 @@ public class SessionStorageService
         _jsRuntime = jsRuntime;
     }
 
-    public async Task SetPlayerIdAsync(Guid playerId)
+    public async Task SetPlayerIdAsync(int playerId)
     {
         await _jsRuntime.InvokeVoidAsync("localStorage.setItem", PlayerIdKey, playerId.ToString());
     }
 
-    public async Task<Guid?> GetPlayerIdAsync()
+    public async Task<int?> GetPlayerIdAsync()
     {
         try
         {
@@ -25,7 +25,7 @@ public class SessionStorageService
             if (string.IsNullOrEmpty(value))
                 return null;
 
-            return Guid.TryParse(value, out var playerId) ? playerId : null;
+            return int.TryParse(value, out var playerId) ? playerId : null;
         }
         catch
         {

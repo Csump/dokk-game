@@ -6,12 +6,12 @@ namespace Game.Models;
 public class Player
 {
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
     public Stats Stats { get; set; } = new();
     public PlayerType Type { get; set; } = new();
     public List<DecisionLog> Decisions { get; set; } = new();
-    public Guid CurrentSituationId { get; set; }
+    public int CurrentSituationId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? CompletedAt { get; set; }
 

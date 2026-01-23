@@ -5,7 +5,7 @@ namespace Game.Models;
 public class DecisionLog
 {
     [Key]
-    public Guid Id { get; set; }
-    public Guid ChoiceId { get; set; }
+    public int Id { get; set; }
+    public int ChoiceId { get; set; }
     public DateTime TakenAt { get; set; } = DateTime.Now;
 }

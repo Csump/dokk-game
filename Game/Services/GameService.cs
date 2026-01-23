@@ -45,7 +45,7 @@ public class GameService
         return player;
     }
 
-    public async Task<Player?> GetPlayerAsync(Guid playerId)
+    public async Task<Player?> GetPlayerAsync(int playerId)
     {
         return await _context.Players
             .Include(p => p.Decisions)
@@ -61,7 +61,7 @@ public class GameService
             .FirstOrDefaultAsync(s => s.Id == player.CurrentSituationId);
     }
 
-    public async Task<Player> ProceedAsync(Player player, Guid situationId)
+    public async Task<Player> ProceedAsync(Player player, int situationId)
     {
         var situation = await _context.Situations.FindAsync(situationId);
         if (situation == null) return player;
@@ -72,7 +72,7 @@ public class GameService
         return player;
     }
 
-    public async Task<Player> TakeChoiceAsync(Player player, Guid choiceId)
+    public async Task<Player> TakeChoiceAsync(Player player, int choiceId)
     {
         Choice? choice = await _context.Choices.FindAsync(choiceId);
         if (choice == null) return player;
@@ -86,7 +86,7 @@ public class GameService
         return player;
     }
 
-    public async Task<Player> ContinueFromHalftimeAsync(Player player, Guid nextSituationId)
+    public async Task<Player> ContinueFromHalftimeAsync(Player player, int nextSituationId)
     {
         player.CurrentSituationId = nextSituationId;
         _context.Update(player);
