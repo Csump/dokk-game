@@ -2,7 +2,7 @@
 
 namespace Game.Models;
 
-public abstract class Situation
+public class Situation
 {
     [Key]
     public int Id { get; set; }
@@ -14,4 +14,5 @@ public abstract class Situation
     public bool IsTerminal { get; set; } = false;
     public int? NextSituationId { get; set; }
     public List<Choice> Choices { get; set; } = new();
+    public SituationType Type { get; }
 }
