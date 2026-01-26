@@ -5,7 +5,15 @@ namespace Game.Data;
 
 public class GameDbContext : DbContext
 {
+    private readonly ILogger<GameDbContext>? _logger;
+
     public GameDbContext(DbContextOptions<GameDbContext> options) : base(options) { }
+
+    public GameDbContext(DbContextOptions<GameDbContext> options, ILogger<GameDbContext> logger) 
+        : base(options)
+    {
+        _logger = logger;
+    }
 
     public DbSet<Player> Players => Set<Player>();
     public DbSet<Situation> Situations => Set<Situation>();
@@ -73,7 +81,7 @@ public class GameDbContext : DbContext
         modelBuilder.Entity<Situation>(entity =>
         {
             entity.ToTable("situations");
-            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever(); // Important: don't auto-generate
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever();
             entity.Property(e => e.Title).HasColumnName("title");
             entity.Property(e => e.Text).HasColumnName("situation_text");
             entity.Property(e => e.IllustrationUrl).HasColumnName("illustration");
@@ -90,7 +98,7 @@ public class GameDbContext : DbContext
         modelBuilder.Entity<Choice>(entity =>
         {
             entity.ToTable("choices");
-            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever(); // Important: don't auto-generate
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever();
             entity.Property(e => e.SituationId).HasColumnName("situation_id");
             entity.Property(e => e.Text).HasColumnName("choice_text");
             entity.Property(e => e.NextSituationId).HasColumnName("next_situation_id");
@@ -110,14 +118,40 @@ public class GameDbContext : DbContext
 
     public override int SaveChanges()
     {
-        ConvertDateTimesToUtc();
-        return base.SaveChanges();
+        try
+        {
+            ConvertDateTimesToUtc();
+            return base.SaveChanges();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger?.LogError(ex, "Database update error in SaveChanges");
+            throw new DatabaseOperationException("Failed to save changes to database", ex);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Unexpected error in SaveChanges");
+            throw new DatabaseOperationException("An unexpected database error occurred", ex);
+        }
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        ConvertDateTimesToUtc();
-        return base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            ConvertDateTimesToUtc();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger?.LogError(ex, "Database update error in SaveChangesAsync");
+            throw new DatabaseOperationException("Failed to save changes to database", ex);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Unexpected error in SaveChangesAsync");
+            throw new DatabaseOperationException("An unexpected database error occurred", ex);
+        }
     }
 
     private void ConvertDateTimesToUtc()
@@ -155,4 +189,8 @@ public class GameDbContext : DbContext
             }
         }
     }
+}
+
+public class DatabaseOperationException(string message, Exception innerException) : Exception(message, innerException)
+{
 }

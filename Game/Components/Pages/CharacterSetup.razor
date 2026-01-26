@@ -205,15 +205,24 @@
 
         try
         {
-            var player = await GameService.CreatePlayerAsync(
+            var (success, player, errorMessage) = await GameService.CreatePlayerAsync(
                 username,
                 _model.Level,
                 CurrentCharacter.Gender,
                 CurrentCharacter.Age
             );
 
-            await GameState.SetPlayerAsync(player);
-            Navigation.NavigateTo("/play");
+            if (success && player is not null)
+            {
+                await GameState.SetPlayerAsync(player);
+                Navigation.NavigateTo("/play");
+            }
+            else
+            {
+                _messages.Add(new FieldIdentifier(_model, nameof(_model.Username)),
+                    errorMessage ?? "Nem sikerült létrehozni a karaktert. Próbáld újra!");
+                _editContext.NotifyValidationStateChanged();
+            }
         }
         finally
         {

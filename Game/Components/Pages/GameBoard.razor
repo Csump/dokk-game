@@ -176,11 +176,21 @@
 
         try
         {
-            player = await GameService.TakeChoiceAsync(player, choice.Id);
-            await GameState.UpdatePlayerAsync(player);
+            var (success, updatedPlayer, errorMessage) = await GameService.TakeChoiceAsync(player, choice.Id);
+            
+            if (success)
+            {
+                player = updatedPlayer;
+                await GameState.UpdatePlayerAsync(player);
 
-            CheckCheckpoint();
-            await LoadSituationAsync();
+                CheckCheckpoint();
+                await LoadSituationAsync();
+            }
+            else
+            {
+                Console.WriteLine($"Failed to take choice: {errorMessage}");
+                await LoadSituationAsync();
+            }
         }
         finally
         {
@@ -200,11 +210,21 @@
 
         try
         {
-            player = await GameService.ProceedAsync(player, currentSituation.Id);
-            await GameState.UpdatePlayerAsync(player);
+            var (success, updatedPlayer, errorMessage) = await GameService.ProceedAsync(player, currentSituation.Id);
+            
+            if (success)
+            {
+                player = updatedPlayer;
+                await GameState.UpdatePlayerAsync(player);
 
-            CheckCheckpoint();
-            await LoadSituationAsync();
+                CheckCheckpoint();
+                await LoadSituationAsync();
+            }
+            else
+            {
+                Console.WriteLine($"Failed to proceed: {errorMessage}");
+                await LoadSituationAsync();
+            }
         }
         finally
         {

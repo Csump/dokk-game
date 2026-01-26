@@ -6,6 +6,7 @@
 @inject GameService GameService
 @inject GameState GameState
 @inject NavigationManager Navigation
+@inject ILogger<Results> Logger
 
 <PageTitle>Félidő</PageTitle>
 
@@ -95,9 +96,18 @@
 
             if (currentSituation?.NextSituationId is not null)
             {
-                player = await GameService.ContinueFromHalftimeAsync(player, currentSituation.NextSituationId.Value);
-                await GameState.UpdatePlayerAsync(player);
-                Navigation.NavigateTo("/play");
+                var (success, updatedPlayer, errorMessage) = await GameService.ContinueFromHalftimeAsync(player, currentSituation.NextSituationId.Value);
+                
+                if (success)
+                {
+                    player = updatedPlayer;
+                    await GameState.UpdatePlayerAsync(player);
+                    Navigation.NavigateTo("/play");
+                }
+                else
+                {
+                    Logger.LogError("Failed to continue from halftime: {Error}", errorMessage);
+                }
             }
         }
         finally
