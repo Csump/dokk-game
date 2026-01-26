@@ -107,4 +107,52 @@ public class GameDbContext : DbContext
             });
         });
     }
+
+    public override int SaveChanges()
+    {
+        ConvertDateTimesToUtc();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ConvertDateTimesToUtc();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void ConvertDateTimesToUtc()
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity == null) continue;
+
+            foreach (var property in entry.Properties)
+            {
+                if (property.Metadata.ClrType == typeof(DateTime) && property.CurrentValue != null)
+                {
+                    var dateTime = (DateTime)property.CurrentValue;
+                    if (dateTime.Kind == DateTimeKind.Unspecified)
+                    {
+                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+                    }
+                    else if (dateTime.Kind == DateTimeKind.Local)
+                    {
+                        property.CurrentValue = dateTime.ToUniversalTime();
+                    }
+                }
+                else if (property.Metadata.ClrType == typeof(DateTime?) && property.CurrentValue != null)
+                {
+                    var dateTime = (DateTime)property.CurrentValue;
+                    if (dateTime.Kind == DateTimeKind.Unspecified)
+                    {
+                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+                    }
+                    else if (dateTime.Kind == DateTimeKind.Local)
+                    {
+                        property.CurrentValue = dateTime.ToUniversalTime();
+                    }
+                }
+            }
+        }
+    }
 }
