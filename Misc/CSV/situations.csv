@@ -3,7 +3,10 @@
 2;OMHV statisztikai adatok;"Az egyetemi OMHV rendszerben összegzett adatok az online kvíz módszert alkalmazó kurzusokról. Az előző három tanév átlaga vs. a módszer bevezetése után:                      
 – Az oktató módszerével elégedett:  53% / 34%. 
 – Mennyire volt interaktív a foglalkozás:  13% / 21%.
-– A kurzus oktatóját ajánlaná-e hallgatótársainak: 69% / 61%. ";diagramok_stat.jpg;FALSE;FALSE;FALSE;Infó;3
+– A kurzus oktatóját ajánlaná-e hallgatótársainak: 69% / 61%.
+Szöveges válaszok:
+Az OMHV rendszerben rögzített szöveges válaszok szerint az online kvíz módszert a hallgatók többsége kezdetben pozitívan fogadta, értékelve annak játékos elemeit. Később azonban előjöttek a korlátok is. A kvíz állandó ismételgetése minden órán előbb unalmassá, később pedig sokak számára terhessé vált: „Hiába mások a kérdések, tök unalmas mindig ugyanazt a játékot gyúrni.” Előfordult, hogy az internet kapcsolat nem volt elég stabil az online kvíz zökkenőmentes lejátszásához, vagy más technikai probléma lépett fel, így az a tervezettnél sokkal több időt vett igénybe: „Kínos volt a hiba hosszas keresgélése, miközben rengetek dolgunk lett volna. Amatőrök.”
+A hallgatók visszajelzései szerint az eszköz nem alkalmas komplexebb kérdések megfogalmazására, így a tananyag lényeges területei a kvíz számára érintetlenek maradtak: „A kvízből keveset tanulunk, mert képtelen az alapfogalmaknál mélyebbre menni.” Egyeseket zavart az is, hogy a válaszadás gyorsasága is fontos a játékban, mivel az ilyenfajta gyorsaság nem kiemelt szakmai követelmény: „Idegesít az időmérés, nem szeretek kapkodni, stresszel. Szerintem ez nem lóverseny. Vagy mégis?” ";diagramok_stat.jpg;FALSE;FALSE;FALSE;Infó;3
 3;Meg tudjátok hozni a döntést a kurzusok átalakításáról?;;kurzusalakitas_dontes.png;FALSE;FALSE;FALSE;Döntés;
 4;Az oktatási dékánhelyettes úgy látja, hogy az OMHV adatok alapján nem lehet kurzust átalakítani, további információk megszerzését kéri!;;choice_dekan.png;FALSE;FALSE;FALSE;Infó;3
 5;Bár hosszan próbáltok érvelni a döntésetek mellett, az oktatási dékánhelyettes nem ért egyet azzal, hogy nem kell megújítani a kurzusokat, így újra össze kell hívnotok a csapatot.;;choice_dekan.png;FALSE;FALSE;FALSE;Infó;3
