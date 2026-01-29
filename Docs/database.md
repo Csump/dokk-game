@@ -108,7 +108,7 @@ INSERT INTO choices (id, situation_id, choice_text, next_situation_id, delta_ene
 
 Tábla neve: `players`
 
-- `id`: A döntés azonosítója.
+- `id`: A játékos azonosítója.
 - `name`: A játékos neve.
 - `is_male`: `TRUE`, ha a játékos férfikaraktert választott, `FALSE`, ha nőit.
 - `is_old`: `TRUE`, ha a játékos idős karaktert választott, `FALSE`, ha fiatalt.
@@ -133,7 +133,7 @@ Ebbe a táblába manuálisan nem kell belenyúlni. A kiürítéséhez a `05_rese
 
 Tábla neve: `decisions`
 
-- `id`: A döntés azonosítója.
+- `id`: A játékosdöntés azonosítója.
 - `player_id`: A döntéshozó játékos azonosítója.
 - `choice_id`: A választott döntés azonosítója.
 - `timestamp`: A döntéshozás dátuma-időpontja.
@@ -152,3 +152,4 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni a [Szituációtípusok](situation-types.md) dokumentációt.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
