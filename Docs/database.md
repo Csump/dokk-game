@@ -63,10 +63,10 @@ Tábla neve: `situations`
 - `id`: A szituáció azonosítója (létrehozásnál nem kell megadni).
 - `title`: A szituáció címe (kötelező).
 - `situation_text`: A szituáció leírása.
-- `illustration`: Az illusztrációs fájl neve (pld. "illu.png").
-- `is_starter`: Alapértelmezetten `FALSE`, a kezdőszituáció esetén TRUE. A táblában pontosan egy `TRUE` értékű szituáció szerepelhet.
+- `illustration`: Az illusztrációs fájl neve (pld. "`illu.png`").
+- `is_starter`: Alapértelmezetten `FALSE`, a kezdőszituáció esetén `TRUE`. A táblában pontosan egy `TRUE` értékű szituáció szerepelhet.
 - `is_halftime`: Alapértelmezetten `FALSE`, a félidős képernyő előtti utolsó szituáció esetén `TRUE`.
-- `is_terminal`: Alapértelmezetten `FALSE`, a zárószituáció(k) esetén `TRUE`. A táblában legalább egy TRUE értékű szituáció kell, hogy szerepeljen.
+- `is_terminal`: Alapértelmezetten `FALSE`, a zárószituáció(k) esetén `TRUE`. A táblában legalább egy `TRUE` értékű szituáció kell, hogy szerepeljen.
 - `situation_type`: A szituáció típusa (kötelező). Az alábbi számértékeket veheti fel:
 	- 1 (infó)
 	- 2 (párbeszéd)
@@ -152,12 +152,3 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni a [Szituációtípusok](situation-types.md) dokumentációt.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
-
-
-
-
-
-
-
-
-
