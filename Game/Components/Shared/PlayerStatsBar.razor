@@ -76,7 +76,7 @@
 
     private async Task ClearDeltaAfterDelay(string key)
     {
-        await Task.Delay(800);
+        await Task.Delay(1600);
         _deltas.Remove(key);
         await InvokeAsync(StateHasChanged);
     }

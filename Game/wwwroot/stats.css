@@ -36,6 +36,7 @@
     border-radius: 12px;
     font-size: 18px;
     user-select: none;
+    overflow: visible;
 }
 
     .player-stat .stat-icon {
@@ -129,7 +130,7 @@
     top: -5px;
     right: -3px;
     width: 15px;
-    animation: fade-out .8s ease-in-out forwards;
+    animation: fade-out 1.6s ease-in-out forwards;
 }
 
 @keyframes fade-out {
