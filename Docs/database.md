@@ -94,7 +94,7 @@ Ebbe a táblába manuálisan nem kell belenyúlni. A kiürítéséhez a `05_rese
 
 ## Az adatbázis szerkesztése
 
-Az adatbázist [SQL scriptekkel](https://www.w3schools.com/sql/sql_examples.asp) lehet szerkeszteni.
+Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_examples.asp) lehet szerkeszteni és megtekinteni.
 
 ### Általános figyelmeztetések
 
@@ -104,3 +104,4 @@ Az adatbázist [SQL scriptekkel](https://www.w3schools.com/sql/sql_examples.asp)
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni az `architecture.md` vonatkozó leírását.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
