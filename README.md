@@ -3,7 +3,7 @@
 
 **Higher Education Game for Innovation Expertise**
 
-A HEDGIE egy játékosított kutatás, amely egy egyetemi projekt keretében készült. Célja, hogy támogassa az egyetemi oktatókat az innovatív oktatási és döntéshozatali gyakorlatok kipróbálásában egy interaktív narratívába szőtt döntésalapú játékon keresztül.
+A [HEDGIE](hedgie.elte.hu) egy játékosított kutatás, amely egy egyetemi projekt keretében készült. Célja, hogy támogassa az egyetemi oktatókat az innovatív oktatási és döntéshozatali gyakorlatok kipróbálásában egy interaktív narratívába szőtt döntésalapú játékon keresztül.
 
 ## A játékról
 
