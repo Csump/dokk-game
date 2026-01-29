@@ -2,7 +2,55 @@
 
 ## Az adatbázis elérése
 
-TODO
+### Alapinformációk
+
+Az adatbázis kizárólag az ELTE hálózatáról érhető el. A külső, közvetlen adatbázis-kapcsolat le van tiltva. Az adatbázis elérése a host szerveren futtatott Docker konténeren keresztül történik.
+
+### Előfeltételek
+
+#### ELTE VPN hozzáférés
+
+Külső gépről való csatlakozás esetén mindenképpen csatlakozni kell az ELTE VPN-hez. A hozzáférést (VIP státusz) előzetesen meg kell igényelni.
+
+#### SSH hozzáférés
+
+Szükséges továbbá egy [SSH kulcspár generálása](https://docs.oracle.com/en/cloud/cloud-at-customer/occ-get-started/generate-ssh-key-pair.html) is. Ebből a publikus kulcsot el kell küldeni a rendszergazdáknak, hogy tudják, melyik gépet engedhetik be a szerverre.
+
+### Csatlakozás
+
+#### SSH kapcsolódás privát kulccsal:
+
+```bash
+ssh -i ~/.ssh/elte strygm_manager@docker-prod2.caesar.elte.hu
+```
+
+A parancsot kiadván bejutunk az ELTE szerverére. Az adatbázis adatai (például a szerkesztéséhez szükséges jelszó) a `.psql_creds` fájlban található.
+
+#### SQL scriptek futtatása Dockerrel
+
+Ha a `scripts` könyvtárba helyeztük az általunk írt scriptet, az alábbi paranccsal tudjuk futtatni:
+
+```bash
+docker run -it --rm -v /opt/strygm_manager/scripts:/tmp/scripts postgres:16-alpine psql -h db-ext01.caesar.elte.hu -U dokkstorygame_manager -d dokkstorygame -f /tmp/scripts/FILENAME.sql
+```
+
+Ehhez a parancshoz be fogja kérni a felület a korábban említett jelszót.
+
+#### Interaktív adatbázis-elérés (psql)
+
+Interaktív PostgreSQL konzol indítása:
+
+```bash
+docker run -it --rm -v /opt/strygm_manager/scripts:/tmp/scripts postgres:16-alpine sh
+```
+
+Majd a konténeren belül:
+
+```bash
+psql -h db-ext01.caesar.elte.hu -U dokkstorygame_manager -d dokkstorygame
+```
+
+Az itt kiadható parancsokhoz egy kis segédlet: [PostgreSQL interactive terminal](https://www.postgresql.org/docs/current/app-psql.html). Innen egyébként sima SQL parancsok is kiadhatók.
 
 ## Az adatbázis felépítése
 
@@ -104,4 +152,5 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni az `architecture.md` vonatkozó leírását.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
 
