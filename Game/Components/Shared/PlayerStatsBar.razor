@@ -8,6 +8,11 @@
             var canonical = stat.Value.Canonical.ToLower();
             var iconPath = $"src/Icons/{canonical}.png";
             var cssClass = $"player-stat stat-{canonical}";
+            
+            if (_deltas.ContainsKey(stat.Value.Canonical))
+            {
+                cssClass += " stat-shake";
+            }
 
             var arrow = GetArrow(stat.Value.Canonical);
 
