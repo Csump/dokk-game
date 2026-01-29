@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 100px;
+    gap: 6.25vh;
     isolation: isolate;
     position: relative;
     background: linear-gradient(0deg, var(--slate-900) 0%, var(--slate-800) 100%);
@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 100px 700px 100px 150px;
+    padding: 6.25vh 40vw 6.25vh 10vw;
 
     flex: none;
     order: 2;
@@ -39,7 +39,7 @@
 
 .home-character {
     position: fixed;
-    height: 820px;
+    height: 100vh;
     right: 0;
     bottom: 0;
 
