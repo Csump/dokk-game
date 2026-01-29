@@ -36,7 +36,6 @@
             @if (!string.IsNullOrWhiteSpace(currentSituation.IllustrationUrl))
             {
                 <img src="./src/Situations/@currentSituation.IllustrationUrl"
-                     alt="Illusztráció"
                      class="situation-illustration"
                      onerror="this.onerror=null; this.src='./src/Situations/hedgie_terulo.png';" />
 			}
@@ -52,6 +51,7 @@
 
             @if (currentSituation.Type == SituationType.Info || currentSituation.Type == SituationType.Minigame)
             {
+                <div style="height: 12vh;"></div>
                 <div class="continue-wrapper">
                     <button class="fancy-light" type="button" @onclick="ProceedAsync" disabled="@isProcessing">
                         <div class="shine" />
