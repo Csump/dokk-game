@@ -1,66 +1,56 @@
+
 # HEDGIE
 
 **Higher Education Game for Innovation Expertise**
 
-HEDGIE is a gamified research and experimentation tool developed as part of an ELTE university project.
+A HEDGIE egy játékosított kutatás, amely egy egyetemi projekt keretében készült. Célja, hogy támogassa az egyetemi oktatókat az innovatív oktatási és döntéshozatali gyakorlatok kipróbálásában egy interaktív narratívába szőtt döntésalapú játékon keresztül.
 
-The goal of the project is to support higher education instructors in exploring and reflecting on innovative teaching and educational decision-making through a decision-based game experience.
+## A játékról
 
-## Concept
+A HEDGIE egy **döntésalapú narratív játék**, amelyben a játékosok:
 
-HEDGIE is a decision-based narrative game. The player creates a character with predefined attributes. The game progresses through situations. Each situation may present:
+- Létrehozzák saját karakterüket
+- Különféle szituációkban vesznek részt
+- Döntéseket hoznak, amelyek hatással vannak a történet alakulására
+- Hét, oktatói kompetenciákat reprezentáló stat mentén követik nyomon fejlődésüket
 
-* Information only
-* One or more decisions
-* Minigame-like interactions (in the future)
+## Technology stack
 
-Each decision:
+- [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
+- [.NET 9](https://dotnet.microsoft.com/)
+- [Entity Framework Core 9](https://docs.microsoft.com/ef/core/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/)
 
-* Modifies player stats (additive, capped)
-* Determines the next situation
+## Projektstruktúra
 
-Some situations are terminal, ending the game. At halftime and in the end, an evaluation is shown.
+### Game
 
-## Player Stats
-
-The game tracks multiple attributes, such as:
-
-* Energy
-* Motivation
-* Confidence
-* Proactivity
-* Cooperation
-* Preparedness
-* Creativity
-
-Stat changes are additive only and respect predefined caps.
-
-## Technical Overview
-
-### Architecture
-
-* Blazor Server application
-* Entity Framework Core
-* Designed in-memory first, database-ready later
-* Content-driven architecture (data separated from logic)
+Itt található maga a futtatható projekt.
 
 ### Database
 
-* PostgreSQL
-* Decisions are logged for later evaluation
-* No authentication or password storage
+Adatbáziskezeléssel kapcsolatos fájlok gyűjtőhelye:
 
-## Folders
+- `/CSV`: Nyers adatok `CSV` formátumban.
+- `/Raw`: Nyers adatok `XLSX` formátumban.
+- `/Scripts`: Python scriptek, amelyek SQL scripteket hoznak létre az adatbázis kezdeti feltöltéséhez.
+- `/SQL`: PostgreSQL scriptek.
 
-### Game/
+### Docs
 
-The actual Blazor application. This folder alone is sufficient to run the project.
+A dokumentációk gyűjtőhelye.
 
-### Database/
+- [Architektúra](architecture.md): Rendszerarchitektúra
+- [Adatbázis](database.md): Adatbázisséma és kapcsolatok
+- [Deployment](deployment.md): Telepítési és futtatási útmutató
+- [Játékmenet](Docs/gameplay-mechanics.md): Játékmenet
+- [Szituációtípusok](Docs/situation-types.md): Szituációtípusok bemutatása
 
-Database related files: scripts, raw CSVs (these files are not required to run the application).
+## Projektinformációk
 
-### Docs/
+- **Megbízó**: Eötvös Loránd Tudományegyetem, [DOKK ernyőprojekt](https://www.dokk.elte.hu/)
+- **Cél**: Kutatás és kísérletezés a felsőoktatási innováció területén
+- **Design**: [Prototípus](https://www.figma.com/proto/FeLllZcCJXRNfm4gJd0oxl/Design?page-id=51%3A251&node-id=73-423&viewport=207%2C555%2C0.14&t=B5gu3U1QlVkSSq0i-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=73%3A423), [Figma fájl](https://www.figma.com/design/FeLllZcCJXRNfm4gJd0oxl/Design?node-id=73-423&t=g1UVk37i2pLMocSs-1)
 
-Documentation (these files are not required to run the application).
-
+**Tervezők**: *[Ring Noémi](https://www.instagram.com/ringnoemi.psd/)* (illusztrációk), *[Pongrácz Rita](https://linktr.ee/hagyma)* (UI design)
