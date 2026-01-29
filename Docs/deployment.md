@@ -34,7 +34,7 @@ scp -i C:\Users\Csump\.ssh\elte "C:\Users\Csump\source\repos\dokk-game\Game\dokk
 
 4. Belépés az ELTE szerverére
 
-Belépés előtt csatlakozni kell az ELTE VPN-jére. További előfeltételek a `database.md` dokumentumban találhatók.
+Belépés előtt csatlakozni kell az ELTE VPN-jére. További előfeltételek az [adatbázis dokumentációjában](database.md) találhatók.
 
 ```bash
 ssh -i .\.ssh\elte strygm_manager@docker-prod2.caesar.elte.hu
@@ -84,3 +84,4 @@ Az alkalmazás ezután az éles környezetben is elérhető az alábbi címen:
 [https://hedgie.elte.hu/](https://hedgie.elte.hu/)
 
 Ha az oldal megfelelően betölt és az elvárt verzió működik, a deployment sikeresnek tekinthető.
+
