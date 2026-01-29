@@ -18,7 +18,7 @@ Szükséges továbbá egy [SSH kulcspár generálása](https://docs.oracle.com/e
 
 ### Csatlakozás
 
-#### SSH kapcsolódás privát kulccsal:
+#### SSH kapcsolódás privát kulccsal
 
 ```bash
 ssh -i ~/.ssh/elte strygm_manager@docker-prod2.caesar.elte.hu
@@ -152,6 +152,7 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni a [Szituációtípusok](situation-types.md) dokumentációt.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
 
 
 
