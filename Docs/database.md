@@ -149,8 +149,9 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Ellenőrizd a kötelező mezők meglétét!
 - Ellenőrizd az értékek típusát és korlátait! (Például a `situations` tábla `situation_type` mezője csak 1 és 5 közötti egész számokat fogad el.)
 - Ha azonosítóhivatkozást módosítasz (például `next_situation_id`), ellenőrizd, hogy a hivatkozott azonosító létezik-e!
-- Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni az `architecture.md` vonatkozó leírását.)
+- Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni a `situation-types.md` tartalmát.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
 
 
