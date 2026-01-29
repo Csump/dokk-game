@@ -33,7 +33,6 @@ Itt található maga a futtatható projekt.
 Adatbáziskezeléssel kapcsolatos fájlok gyűjtőhelye:
 
 - `/CSV`: Nyers adatok `CSV` formátumban.
-- `/Raw`: Nyers adatok `XLSX` formátumban.
 - `/Scripts`: Python scriptek, amelyek SQL scripteket hoznak létre az adatbázis kezdeti feltöltéséhez.
 - `/SQL`: PostgreSQL scriptek.
 
