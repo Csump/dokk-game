@@ -12,7 +12,7 @@
 ### Fő komponensek
 
 #### Components/Pages
-- `GameBoard.razor`: A játék központi felülete, itt történik meg a végigjátszás. A játékosok különböző helyzeteken haladnak végig, a döntéseikkel alakítják a játékmenetet és a statjaikat.
+- `GameBoard`: A játék központi felülete, itt történik meg a végigjátszás. A játékosok különböző helyzeteken haladnak végig, a döntéseikkel alakítják a játékmenetet és a statjaikat.
 
 #### Services
 - `GameService`: A játék üzleti logikája (játékos létrehozása, döntések kezelése, előrehaladás)
@@ -38,3 +38,4 @@
 
 ### Renderelési mód
 - **Interactive server**: Valós idejű szerveroldali renderelés SignalR kommunikációval.
+
