@@ -15,7 +15,7 @@ A karakter neme és életkora befolyással van a kezdőstatokra, ennek kiszámí
 
 ### Szituációtípusok
 
-A játék öt különböző szituációtípust használ. Ezek hatással vannak a működési modellre és a UI viselkedésére. Részletes leírás: [Szituációtípusok](./Docs/situation-types.md).
+A játék öt különböző szituációtípust használ. Ezek hatással vannak a működési modellre és a UI viselkedésére. Részletes leírás: [Szituációtípusok](situation-types.md).
 
 > **Megjegyzés**: a `Special` és `Minigame` típusok jelenleg egyszerűsített módon működnek. Ezek későbbi funkcióbővítésre vannak előkészítve, amely egyedi játéklogikát igényel.
 
