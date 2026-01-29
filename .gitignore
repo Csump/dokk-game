@@ -60,3 +60,4 @@ nunit-*.xml
 .vs/dokk-game/FileContentIndex/bd8b1610-31f4-4644-82ab-a8e4a1d532d1.vsidx
 /.vs
 /Game/.vs
+/.vscode
