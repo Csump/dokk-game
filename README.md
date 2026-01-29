@@ -56,7 +56,11 @@ Stat changes are additive only and respect predefined caps.
 
 The actual Blazor application. This folder alone is sufficient to run the project.
 
-### Misc/
+### Database/
 
-Supplementary materials (these files are not required to run the application).
+Database related files: scripts, raw CSVs (these files are not required to run the application).
+
+### Docs/
+
+Documentation (these files are not required to run the application).
 
