@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
 
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 html, body, .main-container {
     font-family: 'Hanken Grotesk', Helvetica, sans-serif;
 
