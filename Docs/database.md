@@ -54,7 +54,7 @@ Az itt kiadható parancsokhoz egy kis segédlet: [PostgreSQL interactive termina
 
 ## Az adatbázis felépítése
 
-Az adatbázis strukturális terve [ezen a linken teinthető meg](https://www.figma.com/board/ue4BZW1J3yJbtgdWZwh7Vu/Development?node-id=1-2999&t=pK3QmD2RcbSQBrdK-4).
+Az adatbázis strukturális terve [ezen a linken tekinthető meg](https://www.figma.com/board/ue4BZW1J3yJbtgdWZwh7Vu/Development?node-id=1-2999&t=pK3QmD2RcbSQBrdK-4).
 
 ### Szituációk
 
@@ -152,6 +152,7 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Válassz megfelelő szituációtípust! (A helyes döntéshez érdemes elolvasni a `situation-types.md` tartalmát.)
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
+
 
 
 
