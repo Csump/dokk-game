@@ -128,7 +128,6 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: flex-start;
     align-content: center;
     margin-bottom: 350px;
     gap: 45px 15px;
