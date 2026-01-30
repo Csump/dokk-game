@@ -43,8 +43,9 @@ A dokumentációk gyűjtőhelye.
 - [Architektúra](architecture.md): Rendszerarchitektúra
 - [Adatbázis](database.md): Adatbázisséma és kapcsolatok
 - [Deployment](deployment.md): Telepítési és futtatási útmutató
-- [Játékmenet](Docs/gameplay-mechanics.md): Játékmenet
-- [Szituációtípusok](Docs/situation-types.md): Szituációtípusok bemutatása
+- [Játékmenet](gameplay-mechanics.md): Játékmenet
+- [Szituációtípusok](situation-types.md): Szituációtípusok bemutatása
+- [Funkcionalitás 1.0](functionality-1.0.md): 1.0-ás release funkcióinak listázása
 
 ## Projektinformációk
 
