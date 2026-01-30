@@ -17,6 +17,12 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options =>
+    {
+        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+    });
+
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<GameState>();
 builder.Services.AddScoped<SessionStorageService>();
@@ -46,6 +52,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
 
+//app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();

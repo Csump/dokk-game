@@ -19,7 +19,11 @@ public class Player
     public void TakeChoice(Choice choice, Situation situation)
     {
         Stats.ApplyDelta(choice.DeltaStats);
-        Decisions.Add(new DecisionLog { ChoiceId = choice.Id });
+        Decisions.Add(new DecisionLog
+        {
+            ChoiceId = choice.Id,
+            TakenAt = DateTime.UtcNow
+        });
 
         if (situation.IsTerminal)
         {

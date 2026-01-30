@@ -1,5 +1,6 @@
 ﻿using Game.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Data;
 
@@ -19,6 +20,16 @@ public class GameDbContext : DbContext
     public DbSet<Situation> Situations => Set<Situation>();
     public DbSet<Choice> Choices => Set<Choice>();
     public DbSet<DecisionLog> Decisions => Set<DecisionLog>();
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        // Configure all DateTime properties to use UTC
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+        
+        configurationBuilder.Properties<DateTime?>()
+            .HaveConversion<UtcNullableDateTimeConverter>();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,7 +131,6 @@ public class GameDbContext : DbContext
     {
         try
         {
-            ConvertDateTimesToUtc();
             return base.SaveChanges();
         }
         catch (DbUpdateException ex)
@@ -139,7 +149,6 @@ public class GameDbContext : DbContext
     {
         try
         {
-            ConvertDateTimesToUtc();
             return await base.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException ex)
@@ -153,41 +162,24 @@ public class GameDbContext : DbContext
             throw new DatabaseOperationException("An unexpected database error occurred", ex);
         }
     }
+}
 
-    private void ConvertDateTimesToUtc()
+// UTC DateTime converters
+public class UtcDateTimeConverter : ValueConverter<DateTime, DateTime>
+{
+    public UtcDateTimeConverter() : base(
+        v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+        v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
     {
-        foreach (var entry in ChangeTracker.Entries())
-        {
-            if (entry.Entity == null) continue;
+    }
+}
 
-            foreach (var property in entry.Properties)
-            {
-                if (property.Metadata.ClrType == typeof(DateTime) && property.CurrentValue != null)
-                {
-                    var dateTime = (DateTime)property.CurrentValue;
-                    if (dateTime.Kind == DateTimeKind.Unspecified)
-                    {
-                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-                    }
-                    else if (dateTime.Kind == DateTimeKind.Local)
-                    {
-                        property.CurrentValue = dateTime.ToUniversalTime();
-                    }
-                }
-                else if (property.Metadata.ClrType == typeof(DateTime?) && property.CurrentValue != null)
-                {
-                    var dateTime = (DateTime)property.CurrentValue;
-                    if (dateTime.Kind == DateTimeKind.Unspecified)
-                    {
-                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-                    }
-                    else if (dateTime.Kind == DateTimeKind.Local)
-                    {
-                        property.CurrentValue = dateTime.ToUniversalTime();
-                    }
-                }
-            }
-        }
+public class UtcNullableDateTimeConverter : ValueConverter<DateTime?, DateTime?>
+{
+    public UtcNullableDateTimeConverter() : base(
+        v => v.HasValue ? (v.Value.Kind == DateTimeKind.Utc ? v.Value : DateTime.SpecifyKind(v.Value, DateTimeKind.Utc)) : v,
+        v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v)
+    {
     }
 }
 

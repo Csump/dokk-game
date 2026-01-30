@@ -109,7 +109,8 @@
             }
             else
             {
-                Navigation.NavigateTo("/setup");
+                isLoading = false;
+                await InvokeAsync(StateHasChanged);
             }
         }
     }
