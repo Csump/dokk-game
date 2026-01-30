@@ -40,11 +40,12 @@ Adatbáziskezeléssel kapcsolatos fájlok gyűjtőhelye:
 
 A dokumentációk gyűjtőhelye.
 
-- [Architektúra](architecture.md): Rendszerarchitektúra
-- [Adatbázis](database.md): Adatbázisséma és kapcsolatok
-- [Deployment](deployment.md): Telepítési és futtatási útmutató
+- [Architektúra](Docs/architecture.md): Rendszerarchitektúra
+- [Adatbázis](Docs/database.md): Adatbázisséma és kapcsolatok
+- [Deployment](Docs/deployment.md): Telepítési és futtatási útmutató
 - [Játékmenet](Docs/gameplay-mechanics.md): Játékmenet
 - [Szituációtípusok](Docs/situation-types.md): Szituációtípusok bemutatása
+- [Funkcionalitás 1.0](Docs/functionality-1.0.md): 1.0-ás release funkcióinak listázása
 
 ## Projektinformációk
 
