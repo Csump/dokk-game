@@ -15,29 +15,31 @@
 <PageTitle>HEDGIE Karakterválasztás</PageTitle>
 
 <div class="main-container @($"bg-{CurrentCharacter.Color}")">
-    <div class="upper-wrapper">
-        <h1>Karakterválasztás</h1>
-        <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
+    <div class="setup-content">
+        <div class="upper-wrapper">
+            <h1>Karakterválasztás</h1>
+            <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
 
-        <div class="level-selector">
-            @foreach (var level in Enum.GetValues<PlayerLevel>())
-            {
-                <button type="button"
-                        class="@(_model.Level == level ? "fancy-dark" : "")"
-                        @onclick="() => _model.Level = level">
-                    @FormatEnum(level)
-                </button>
-            }
-        </div>
-    </div>
-
-    <div class="character-info">
-        <div class="character-title">
-            <p class="character-name">@CurrentCharacter.Name</p>
-            <p class="character-quote">„@CurrentCharacter.Quote”</p>
+            <div class="level-selector">
+                @foreach (var level in Enum.GetValues<PlayerLevel>())
+                {
+                    <button type="button"
+                            class="@(_model.Level == level ? "fancy-dark" : "")"
+                            @onclick="() => _model.Level = level">
+                        @FormatEnum(level)
+                    </button>
+                }
+            </div>
         </div>
 
-        <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
+        <div class="character-info">
+            <div class="character-title">
+                <p class="character-name">@CurrentCharacter.Name</p>
+                <p class="character-quote">„@CurrentCharacter.Quote”</p>
+            </div>
+
+            <p class="character-description">@((MarkupString)CurrentCharacter.Description)</p>
+        </div>
     </div>
 
     <button type="button" class="arrow-button left" @onclick="PrevCharacter">
