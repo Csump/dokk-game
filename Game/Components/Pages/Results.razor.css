@@ -75,7 +75,7 @@
         }
 
 .continue-wrapper {
-    position: absolute;
+    position: fixed;
     right: 106px;
     bottom: 40px;
 }
