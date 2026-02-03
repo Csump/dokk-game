@@ -153,3 +153,31 @@ Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_exa
 - Szituáció vagy döntéslehetőség módosításánál, törlésénél vigyázz, hogy ne sérüljön a játék végigjátszhatósága!
 - Szituációt akkor törölj, ha nem tartozik hozzá és nem hivatkozik rá egy döntéslehetőség sem!
 
+## Egyszerűsített módszer
+
+Az adatbázis egyszerű megtekintéséhez/szerkesztéséhez a [pgAdmin](https://www.pgadmin.org/download/) használatát javaslom, az ezen keresztüli adatbáziseléréshez azonban rendszergazdai útmutatás szükséges. Amint a jogosultságigénylés és a csatlakozás sikeresen megtörtént, az adatbázis tábláinak szerkesztése az alábbi módon történhet minimális scriptírással:
+
+1. A pgAdmin bal sávjában lévő Explorer szekcióban kiválasztjuk a `dokkstorygame` adatbázist.
+2. A középső Query részbe beírjuk az alábbi scriptek egyikét:
+
+   Amennyiben a döntéslehetőségek (`choices`) táblát szeretnénk megtekinteni vagy szerkeszteni:
+   ```SQL
+   select * from choices;
+   ```
+
+   Amennyiben a szituációk (`situations`) táblát szeretnénk megtekinteni vagy szerkeszteni:
+   ```SQL
+   select * from situations;
+   ```
+
+   Amennyiben a döntéslogok (`decisions`) táblát szeretnénk megtekinteni vagy szerkeszteni:
+   ```SQL
+   select * from decisions;
+   ```
+
+   Amennyiben a játékosok (`players`) táblát szeretnénk megtekinteni vagy szerkeszteni:
+   ```SQL
+   select * from players;
+   ```
+3. A scriptet az `F5` gomb vagy az eszköztárban lévő playgomb megnyomásával futtatjuk.
+4. A script alatt megjelenő táblázatot Excelhez hasonló módon tudjuk szerkeszteni. A táblázat eszköztárában lehetőségünk nyílik új rekord felvételére és meglévő törlésére is. Ugyanitt tudjuk elmenteni a módosításainkat, illetve CSV formátumban exportálni is tudjuk a tábla tartalmát.
