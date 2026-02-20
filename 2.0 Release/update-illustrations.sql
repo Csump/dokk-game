@@ -1,3 +1,5 @@
+BEGIN;
+
 UPDATE situations
 SET illustration = 
     CASE 
