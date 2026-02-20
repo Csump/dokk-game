@@ -21,14 +21,23 @@
             <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
 
             <div class="level-selector">
-                @foreach (var level in Enum.GetValues<PlayerLevel>())
-                {
-                    <button type="button"
-                            class="@(_model.Level == level ? "fancy-dark" : "")"
-                            @onclick="() => _model.Level = level">
-                        @FormatEnum(level)
-                    </button>
-                }
+                <button type="button"
+                        class="@(_model.Level == PlayerLevel.Doktorandusz ? "fancy-dark" : "")"
+                        @onclick="() => _model.Level = PlayerLevel.Doktorandusz">
+                    @FormatEnum(PlayerLevel.Doktorandusz)
+                </button>
+
+                <button type="button"
+                        class="@(_model.Level == PlayerLevel.Adjunktus ? "fancy-dark" : "")"
+                        @onclick="() => _model.Level = PlayerLevel.Adjunktus">
+                    @FormatEnum(PlayerLevel.Adjunktus)
+                </button>
+
+                <button type="button"
+                        class="@(_model.Level == PlayerLevel.Docens ? "fancy-dark" : "")"
+                        @onclick="() => _model.Level = PlayerLevel.Docens">
+                    @FormatEnum(PlayerLevel.Docens)
+                </button>
             </div>
         </div>
 
