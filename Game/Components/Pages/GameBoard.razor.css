@@ -173,7 +173,7 @@
 .link-button {
     display: flex;
     align-items: center;
-    padding: 5px 8px 4px 10px;
+    padding: 5px 8px 3px 10px;
     background: var(--powder-50);
     border: none;
     position: absolute;
