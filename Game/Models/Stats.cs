@@ -65,7 +65,7 @@ public class Stats
         Initiative = Clamp(Initiative + delta.Initiative);
     }
 
-    public int Total => Energy + Success + SelfReflection + Creativity + Cooperation + Competency + Initiative;
+    public int Total => Energy + Success;
 
     public IReadOnlyDictionary<string, (string Canonical, int Value, StatType Type)> AsDictionary() => new Dictionary<string, (string, int, StatType)>
     {
