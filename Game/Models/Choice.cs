@@ -10,4 +10,5 @@ public class Choice
     public string Text { get; set; } = default!;
     public int NextSituationId { get; set; }
     public Stats DeltaStats { get; set; } = new();
+    public string? Link { get; set; }
 }

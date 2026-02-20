@@ -72,10 +72,18 @@
                     @foreach (var choice in currentSituation.Choices)
                     {
                         var isChoiceTaken = IsChoiceTaken(choice);
-                        <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)" disabled="@isChoiceTaken">
-                            <div class="shine" />
-                            <span class="choice-text">@choice.Text</span>
-                        </button>
+                        <div class="choice-button-container">
+                            @if (!string.IsNullOrWhiteSpace(choice.Link))
+                            {
+                                <button class="link-button" @onclick="() => OpenLink(choice.Link)" @onclick:stopPropagation="true">
+                                    Részletek ↗
+                                </button>
+                            }
+                            <button class="choice-button" @onclick="() => HandleChoiceAsync(choice)" disabled="@isChoiceTaken">
+                                <div class="shine" />
+                                <span class="choice-text">@choice.Text</span>
+                            </button>
+                        </div>
                     }
                 </div>
             }
@@ -314,6 +322,11 @@
         }
 
         return originalUrl;
+    }
+
+    private async Task OpenLink(string link)
+    {
+        await JS.InvokeVoidAsync("open", link, "_blank");
     }
 }
 

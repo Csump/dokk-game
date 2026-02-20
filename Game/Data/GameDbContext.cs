@@ -102,6 +102,7 @@ public class GameDbContext : DbContext
             entity.Property(e => e.SituationId).HasColumnName("situation_id");
             entity.Property(e => e.Text).HasColumnName("choice_text");
             entity.Property(e => e.NextSituationId).HasColumnName("next_situation_id");
+            entity.Property(e => e.Link).HasColumnName("link");
 
             entity.OwnsOne(c => c.DeltaStats, stats =>
             {
