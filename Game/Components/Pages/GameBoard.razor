@@ -39,6 +39,12 @@
                      class="situation-illustration"
                      onerror="this.onerror=null; this.src='./src/Situations/hedgie_terulo.png';" />
 			}
+            else
+            {
+                <img src="./src/Situations/@GetDefaultIllustrationUrl()"
+                     class="situation-illustration"
+                     onerror="this.onerror=null; this.src='./src/Situations/hedgie_terulo.png';" />
+            }
 
             <div class="situation-text">
                 <p class="title">@currentSituation.Title</p>
@@ -243,6 +249,28 @@
         }
     }
 
+    private string GetDefaultIllustrationUrl()
+    {
+        if (player is null)
+        {
+            return "hedgie_terulo.png";
+        }
+
+        switch (player.Type.Gender, player.Type.Age)
+        {
+            case (Gender.Female, Age.Young):
+                return "logo_terulominta_zsofi.png";
+            case (Gender.Female, Age.Old):
+                return "logo_terulominta_gabi.png";
+            case (Gender.Male, Age.Young):
+                return "logo_terulominta_mate.png";
+            case (Gender.Male, Age.Old):
+                return "logo_terulominta_ivan.png";
+            default:
+                return "hedgie_terulo.png";
+        }
+    }
+
     private string GetIllustrationUrl(string originalUrl)
     {
         if (player is null)
@@ -252,19 +280,7 @@
 
         if (originalUrl == "hedgie_terulo.png")
         {
-            switch (player.Type.Gender, player.Type.Age)
-            {
-                case (Gender.Female, Age.Young):
-                    return "logo_terulominta_zsofi.png";
-                case (Gender.Female, Age.Old):
-                    return "logo_terulominta_gabi.png";
-                case (Gender.Male, Age.Young):
-                    return "logo_terulominta_mate.png";
-                case (Gender.Male, Age.Old):
-                    return "logo_terulominta_ivan.png";
-                default:
-                    return "hedgie_terulo.png";
-            }
+            return GetDefaultIllustrationUrl();
         }
 
         if (originalUrl == "osszeallt_a_csapat.png")

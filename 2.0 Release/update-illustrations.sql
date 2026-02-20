@@ -1,11 +1,21 @@
 UPDATE situations
-
 SET illustration = 
     CASE 
-        WHEN illustration = 'dekan.png' THEN 'choice_dekan.png'
-        WHEN illustration = 'lehetpeter_hogyanhaladtok.png' THEN 'choice_dekan.png'
+        WHEN id IN (62, 63) THEN 'diagramok_stat.jpg'
+        WHEN illustration IN (
+            'dekan.png',
+            'lehetpeter_hogyanhaladtok.png',
+            'choice_dekan.png',
+            'choice_gabor.png'
+        ) THEN 'hedgie_terulo.png'
         ELSE illustration
     END
-WHERE illustration IN ('dekan.png', 'lehetpeter_hogyanhaladtok.png');
+WHERE id IN (62, 63)
+   OR illustration IN (
+        'dekan.png',
+        'lehetpeter_hogyanhaladtok.png',
+        'choice_dekan.png',
+        'choice_gabor.png'
+   );
 
 COMMIT;
