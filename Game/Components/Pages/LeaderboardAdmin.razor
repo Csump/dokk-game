@@ -1,0 +1,54 @@
+@page "/leaderboard-full"
+@rendermode InteractiveServer
+@using Game.Models
+@using Game.Services
+
+@inject GameService GameService
+
+<PageTitle>Teljes rangsor</PageTitle>
+
+<div class="main-container">
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border"></div>
+            <p>Dobpergés...</p>
+        </div>
+    }
+    else
+    {
+        <section class="summary">
+            <h1>Teljes rangsor</h1>
+        </section>
+
+        <section class="ranking">
+            @foreach (var (entry, index) in entries.Select((p, i) => (p, i + 1)))
+            {
+                <div class="rank-chip @(index == 1 ? "first" : "")">
+                    <div class="rank">@index</div>
+                    <div class="username">@entry.Username</div>
+                    <div class="score">
+                        <div class="rank-shine" />
+                        @entry.TotalScore
+                    </div>
+                </div>
+            }
+        </section>
+    }
+</div>
+
+@code {
+    private readonly List<Player> entries = new();
+    private bool isLoading = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            entries.Clear();
+            entries.AddRange(await GameService.GetLeaderboardAsync());
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}
