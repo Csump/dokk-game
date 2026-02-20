@@ -35,7 +35,7 @@
 
             @if (!string.IsNullOrWhiteSpace(currentSituation.IllustrationUrl))
             {
-                <img src="./src/Situations/@currentSituation.IllustrationUrl"
+                <img src="./src/Situations/@GetIllustrationUrl(currentSituation.IllustrationUrl)"
                      class="situation-illustration"
                      onerror="this.onerror=null; this.src='./src/Situations/hedgie_terulo.png';" />
 			}
@@ -178,7 +178,7 @@
         try
         {
             var (success, updatedPlayer, errorMessage) = await GameService.TakeChoiceAsync(player, choice.Id);
-            
+
             if (success)
             {
                 player = updatedPlayer;
@@ -212,7 +212,7 @@
         try
         {
             var (success, updatedPlayer, errorMessage) = await GameService.ProceedAsync(player, currentSituation.Id);
-            
+
             if (success)
             {
                 player = updatedPlayer;
@@ -241,6 +241,50 @@
             Navigation.NavigateTo("/results");
             StateHasChanged();
         }
+    }
+
+    private string GetIllustrationUrl(string originalUrl)
+    {
+        if (player is null)
+        {
+            return originalUrl;
+        }
+
+        if (originalUrl == "hedgie_terulo.png")
+        {
+            switch (player.Type.Gender, player.Type.Age)
+            {
+                case (Gender.Female, Age.Young):
+                    return "logo_terulominta_zsofi.png";
+                case (Gender.Female, Age.Old):
+                    return "logo_terulominta_gabi.png";
+                case (Gender.Male, Age.Young):
+                    return "logo_terulominta_mate.png";
+                case (Gender.Male, Age.Old):
+                    return "logo_terulominta_ivan.png";
+                default:
+                    return "hedgie_terulo.png";
+            }
+        }
+
+        if (originalUrl == "osszeallt_a_csapat.png")
+        {
+            switch (player.Type.Gender, player.Type.Age)
+            {
+                case (Gender.Female, Age.Young):
+                    return "osszeallt_a_csapat_zsofi.png";
+                case (Gender.Female, Age.Old):
+                    return "osszeallt_a_csapat_gabi.png";
+                case (Gender.Male, Age.Young):
+                    return "osszeallt_a_csapat_mate.png";
+                case (Gender.Male, Age.Old):
+                    return "osszeallt_a_csapat_ivan.png";
+                default:
+                    return "osszeallt_a_csapat.png";
+            }
+        }
+
+        return originalUrl;
     }
 }
 
