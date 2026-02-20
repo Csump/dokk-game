@@ -7,6 +7,7 @@
 @inject GameState GameState
 @inject GameService GameService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>HEDGIE</PageTitle>
 
@@ -111,6 +112,7 @@
             await EnsurePlayerAsync();
             if (player is not null)
             {
+                await UpdateFaviconAsync();
                 await LoadSituationAsync();
             }
             else
@@ -118,6 +120,17 @@
                 isLoading = false;
                 await InvokeAsync(StateHasChanged);
             }
+        }
+    }
+
+    private async Task UpdateFaviconAsync()
+    {
+        if (player is not null)
+        {
+            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl", 
+                (int)player.Type.Gender, 
+                (int)player.Type.Age);
+            await JS.InvokeVoidAsync("faviconHelper.changeFavicon", iconUrl);
         }
     }
 

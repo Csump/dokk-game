@@ -7,6 +7,7 @@
 @inject GameState GameState
 @inject NavigationManager Navigation
 @inject ILogger<Results> Logger
+@inject IJSRuntime JS
 
 <PageTitle>Félidő</PageTitle>
 
@@ -65,8 +66,23 @@
         if (firstRender)
         {
             await EnsurePlayerAsync();
+            if (player is not null)
+            {
+                await UpdateFaviconAsync();
+            }
             isLoading = false;
             await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task UpdateFaviconAsync()
+    {
+        if (player is not null)
+        {
+            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl", 
+                (int)player.Type.Gender, 
+                (int)player.Type.Age);
+            await JS.InvokeVoidAsync("faviconHelper.changeFavicon", iconUrl);
         }
     }
 

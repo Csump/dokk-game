@@ -6,6 +6,7 @@
 @inject GameService GameService
 @inject GameState GameState
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Rangsor</PageTitle>
 
@@ -72,10 +73,25 @@
         if (firstRender)
         {
             await EnsurePlayerAsync();
+            if (GameState.CurrentPlayer is not null)
+            {
+                await UpdateFaviconAsync();
+            }
             entries.Clear();
             entries.AddRange(await GameService.GetLeaderboardAsync());
             isLoading = false;
             await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task UpdateFaviconAsync()
+    {
+        if (GameState.CurrentPlayer is not null)
+        {
+            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl", 
+                (int)GameState.CurrentPlayer.Type.Gender, 
+                (int)GameState.CurrentPlayer.Type.Age);
+            await JS.InvokeVoidAsync("faviconHelper.changeFavicon", iconUrl);
         }
     }
 
