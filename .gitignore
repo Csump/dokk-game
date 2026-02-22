@@ -41,7 +41,6 @@ ScaffoldingReadMe.txt
 *~
 CodeCoverage/
 appsettings.Production.json
-*.tar
 
 # MSBuild Binary and Structured Log
 *.binlog
