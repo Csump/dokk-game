@@ -1,0 +1,7 @@
+services:
+  dokk-game:
+    image: dokk-game:latest
+    container_name: dokk-game
+    ports:
+      - "10070:10070"
+    restart: unless-stopped
