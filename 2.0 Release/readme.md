@@ -1,4 +1,4 @@
-# HEDIGE 2.0
+# HEDIGE 2.1
 
 ## Adatbázisfrissítés
 
@@ -8,15 +8,7 @@ A játék megfelelő működéséhez néhány módosítást el kell végezni az 
 2. [`fix-gameplay-logic.sql`](fix-gameplay-logic.sql): Döntési út javítása
 3. [`add-links.sql`](add-links.sql): Döntéshez kötött hivatkozások felvétele
 
-## Deployment
+## Deployment hozzávalói
 
-A [`dokk-game-2.0.tar`](https://drive.google.com/file/d/1L5IDEYCxAqllxVhsUSUZK27e50XZusTs/view?usp=sharing) fájlba csomagolt projektet az alábbi parancsokkal lehet betölteni, majd futtatni:
-
-```bash
-docker load -i dokk-game-2.0.tar
-```
-
-```bash
-docker run -d --name dokk-game-2.0 -p 10070:10070 dokk-game:latest
-```
-
+* Projektcsomag: [`dokk-game-2.1.tar`]([https://drive.google.com/file/d/1L5IDEYCxAqllxVhsUSUZK27e50XZusTs/view?usp=sharing](https://drive.google.com/file/d/1fDdH6zo79PNCmkmv5OzEaRSs1I6WfakX/view?usp=sharing))
+* Compose fálj: [`compose.yaml`](./Game/compose.yaml)
