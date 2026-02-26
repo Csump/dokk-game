@@ -52,7 +52,7 @@ docker load -i dokk-game-VERSION.tar
 Konténerindítás a szükséges portkötéssel:
 
 ```bash
-docker run -d --name dokk-game-VERSION -p 10070:10070 dokk-game:latest
+docker compose up -d
 ```
 
 ## 7. Ellenőrzés
@@ -84,5 +84,6 @@ Az alkalmazás ezután az éles környezetben is elérhető az alábbi címen:
 [https://hedgie.elte.hu/](https://hedgie.elte.hu/)
 
 Ha az oldal megfelelően betölt és az elvárt verzió működik, a deployment sikeresnek tekinthető.
+
 
 
