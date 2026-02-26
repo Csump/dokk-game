@@ -10,5 +10,6 @@ A játék megfelelő működéséhez néhány módosítást el kell végezni az 
 
 ## Deployment hozzávalói
 
-* Projektcsomag: [`dokk-game-2.1.tar`]([https://drive.google.com/file/d/1L5IDEYCxAqllxVhsUSUZK27e50XZusTs/view?usp=sharing](https://drive.google.com/file/d/1fDdH6zo79PNCmkmv5OzEaRSs1I6WfakX/view?usp=sharing))
-* Compose fálj: [`compose.yaml`](./Game/compose.yaml)
+* Projektcsomag: [`dokk-game-2.1.tar`](https://drive.google.com/file/d/1fDdH6zo79PNCmkmv5OzEaRSs1I6WfakX/view?usp=sharing)
+* Compose fálj: [`compose.yaml`](../Game/compose.yaml)
+
