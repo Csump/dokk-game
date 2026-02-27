@@ -1,0 +1,251 @@
+@using Game.Models
+@using Game.Services
+
+@inject GameService GameService
+
+@if (isLoading)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else if (!methodologyCards.Any())
+{
+    <p class="text-muted">Nem találhatók módszertani adatok.</p>
+}
+else
+{
+    <div class="minigame-board">
+
+        <div class="minigame-pool">
+            <p class="pool-label">Húzd a megfelelő helyre:</p>
+            <div class="pool-items">
+                @foreach (var item in poolItems)
+                {
+                    <div class="pool-item @(item.Type == AlignmentItemType.Aim ? "aim-item" : "assessment-item")"
+                         draggable="true"
+                         @ondragstart="() => OnDragStart(item)"
+                         @ondragstart:stopPropagation="true">
+                        <span class="item-label">@(item.Type == AlignmentItemType.Aim ? "Cél" : "Értékelés")</span>
+                        <span class="item-text">@item.Text</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="methodology-cards">
+            @foreach (var card in methodologyCards)
+            {
+                <div class="methodology-card">
+                    <div class="methodology-name">@card.MethodologyName</div>
+
+                    <div class="alignment-slot aim-slot @GetSlotClass(card, AlignmentItemType.Aim)"
+                         @ondragover:preventDefault="true"
+                         @ondrop="() => OnDrop(card, AlignmentItemType.Aim)">
+                        @if (card.PlacedAim != null)
+                        {
+                            <div class="placed-item @(card.AimCorrect == true ? "correct" : "incorrect")">
+                                <span class="item-label">Cél</span>
+                                <span class="item-text">@card.PlacedAim.Text</span>
+                                @if (card.AimCorrect == false)
+                                {
+                                    <button class="remove-btn" @onclick="() => RemoveItem(card, AlignmentItemType.Aim)">✕</button>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="slot-placeholder">Húzz ide egy célt</span>
+                        }
+                    </div>
+
+                    <div class="alignment-slot assessment-slot @GetSlotClass(card, AlignmentItemType.Assessment)"
+                         @ondragover:preventDefault="true"
+                         @ondrop="() => OnDrop(card, AlignmentItemType.Assessment)">
+                        @if (card.PlacedAssessment != null)
+                        {
+                            <div class="placed-item @(card.AssessmentCorrect == true ? "correct" : "incorrect")">
+                                <span class="item-label">Értékelés</span>
+                                <span class="item-text">@card.PlacedAssessment.Text</span>
+                                @if (card.AssessmentCorrect == false)
+                                {
+                                    <button class="remove-btn" @onclick="() => RemoveItem(card, AlignmentItemType.Assessment)">✕</button>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="slot-placeholder">Húzz ide egy értékelést</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (isComplete)
+        {
+            <div class="minigame-success">
+                <p>Sikeresen összehangoltad a módszereket! 🎉</p>
+                <button class="fancy-light" type="button" @onclick="OnCompleteClicked" disabled="@isProcessing">
+                    <div class="shine" />
+                    @(isProcessing ? "Máris..." : "Tovább →")
+                </button>
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public Player Player { get; set; } = default!;
+    [Parameter, EditorRequired] public Situation Situation { get; set; } = default!;
+    [Parameter, EditorRequired] public EventCallback OnComplete { get; set; }
+    [Parameter] public EventCallback OnDeltaApplied { get; set; }
+
+    private bool isLoading = true;
+    private bool isProcessing;
+    private bool isComplete;
+
+    private List<MethodologyCard> methodologyCards = new();
+    private List<AlignmentPoolItem> poolItems = new();
+    private AlignmentPoolItem? draggingItem;
+
+    private enum AlignmentItemType { Aim, Assessment }
+
+    private class AlignmentPoolItem
+    {
+        public string Text { get; set; } = "";
+        public AlignmentItemType Type { get; set; }
+        public int ChoiceId { get; set; } // which methodology this correctly belongs to
+    }
+
+    private class MethodologyCard
+    {
+        public int ChoiceId { get; set; }
+        public string MethodologyName { get; set; } = "";
+        public string CorrectAimText { get; set; } = "";
+        public string CorrectAssessmentText { get; set; } = "";
+        public Stats CorrectDelta { get; set; } = new();
+        public Stats IncorrectDelta { get; set; } = new();
+
+        public AlignmentPoolItem? PlacedAim { get; set; }
+        public AlignmentPoolItem? PlacedAssessment { get; set; }
+        public bool? AimCorrect { get; set; }
+        public bool? AssessmentCorrect { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await GameService.GetMinigameDataAsync(Player);
+
+        methodologyCards = data.Select(d => new MethodologyCard
+        {
+            ChoiceId = d.Methodology.Id,
+            MethodologyName = d.Methodology.Text,
+            CorrectAimText = d.Alignment.AimText,
+            CorrectAssessmentText = d.Alignment.AssessmentText,
+            CorrectDelta = d.Alignment.CorrectDelta,
+            IncorrectDelta = d.Alignment.IncorrectDelta
+        }).ToList();
+
+        // Build pool: one aim + one assessment per methodology, shuffled
+        var allItems = methodologyCards
+            .SelectMany(c => new[]
+            {
+                new AlignmentPoolItem { Text = c.CorrectAimText, Type = AlignmentItemType.Aim, ChoiceId = c.ChoiceId },
+                new AlignmentPoolItem { Text = c.CorrectAssessmentText, Type = AlignmentItemType.Assessment, ChoiceId = c.ChoiceId }
+            })
+            .OrderBy(_ => Random.Shared.Next())
+            .ToList();
+
+        poolItems = allItems;
+        isLoading = false;
+    }
+
+    private void OnDragStart(AlignmentPoolItem item)
+    {
+        draggingItem = item;
+    }
+
+    private async Task OnDrop(MethodologyCard card, AlignmentItemType slotType)
+    {
+        if (draggingItem == null) return;
+        if (draggingItem.Type != slotType) return;
+
+        // Don't allow dropping on an already-locked (correct) slot
+        if (slotType == AlignmentItemType.Aim && card.AimCorrect == true) return;
+        if (slotType == AlignmentItemType.Assessment && card.AssessmentCorrect == true) return;
+
+        // If slot already has an incorrect item, return it to pool first
+        if (slotType == AlignmentItemType.Aim && card.PlacedAim != null)
+            poolItems.Add(card.PlacedAim);
+        if (slotType == AlignmentItemType.Assessment && card.PlacedAssessment != null)
+            poolItems.Add(card.PlacedAssessment);
+
+        // Remove the dragging item from pool
+        poolItems.Remove(draggingItem);
+
+        bool isCorrect = draggingItem.ChoiceId == card.ChoiceId;
+
+        if (slotType == AlignmentItemType.Aim)
+        {
+            card.PlacedAim = draggingItem;
+            card.AimCorrect = isCorrect;
+        }
+        else
+        {
+            card.PlacedAssessment = draggingItem;
+            card.AssessmentCorrect = isCorrect;
+        }
+
+        draggingItem = null;
+
+        // Apply delta to player stats
+        var delta = isCorrect ? card.CorrectDelta : card.IncorrectDelta;
+        var (success, _, _) = await GameService.ApplyMinigameDeltaAsync(Player, delta);
+        if (success)
+            await OnDeltaApplied.InvokeAsync();
+
+        CheckCompletion();
+        StateHasChanged();
+    }
+
+    private void RemoveItem(MethodologyCard card, AlignmentItemType slotType)
+    {
+        if (slotType == AlignmentItemType.Aim && card.AimCorrect != true)
+        {
+            if (card.PlacedAim != null) poolItems.Add(card.PlacedAim);
+            card.PlacedAim = null;
+            card.AimCorrect = null;
+        }
+        else if (slotType == AlignmentItemType.Assessment && card.AssessmentCorrect != true)
+        {
+            if (card.PlacedAssessment != null) poolItems.Add(card.PlacedAssessment);
+            card.PlacedAssessment = null;
+            card.AssessmentCorrect = null;
+        }
+    }
+
+    private void CheckCompletion()
+    {
+        isComplete = methodologyCards.All(c => c.AimCorrect == true && c.AssessmentCorrect == true);
+    }
+
+    private string GetSlotClass(MethodologyCard card, AlignmentItemType slotType)
+    {
+        var correct = slotType == AlignmentItemType.Aim ? card.AimCorrect : card.AssessmentCorrect;
+        return correct switch
+        {
+            true => "slot-correct",
+            false => "slot-incorrect",
+            null => ""
+        };
+    }
+
+    private async Task OnCompleteClicked()
+    {
+        if (isProcessing) return;
+        isProcessing = true;
+        await OnComplete.InvokeAsync();
+    }
+}

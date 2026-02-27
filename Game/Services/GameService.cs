@@ -221,4 +221,112 @@ public class GameService(GameDbContext context, ILogger<GameService> logger)
             .ThenByDescending(p => p.CompletedAt)
             .ToList();
     }
+
+    public async Task<(bool Success, Player Player, string? ErrorMessage)> TakeMultipleChoicesAsync(
+        Player player, IEnumerable<int> choiceIds)
+    {
+        try
+        {
+            var ids = choiceIds.ToList();
+            var choices = await _context.Choices
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (choices.Count != ids.Count)
+            {
+                return (false, player, "One or more choices not found.");
+            }
+
+            var situationId = choices.First().SituationId;
+            if (choices.Any(c => c.SituationId != situationId))
+            {
+                return (false, player, "All choices must belong to the same situation.");
+            }
+
+            var situation = await _context.Situations.FindAsync(situationId);
+            if (situation == null)
+            {
+                return (false, player, "Situation not found.");
+            }
+
+            if (situation.RequiredSelections.HasValue && choices.Count != situation.RequiredSelections.Value)
+            {
+                return (false, player, $"Exactly {situation.RequiredSelections} choices required.");
+            }
+
+            player.TakeMultipleChoices(choices, situation);
+            _context.Update(player);
+            await _context.SaveChangesAsync();
+            return (true, player, null);
+        }
+        catch (DatabaseOperationException ex)
+        {
+            _logger.LogError(ex, "Database error taking multiple choices for player {PlayerId}", player.Id);
+            _context.Entry(player).State = EntityState.Unchanged;
+            return (false, player, "Unable to save your choices. Please try again.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error taking multiple choices for player {PlayerId}", player.Id);
+            _context.Entry(player).State = EntityState.Unchanged;
+            return (false, player, "An unexpected error occurred. Please try again.");
+        }
+    }
+
+    /// <summary>
+    /// Loads minigame data for a Minigame situation: finds the player's multi-select choices
+    /// from the most recent Special situation that precedes the current one, then loads their alignments.
+    /// </summary>
+    public async Task<List<(Choice Methodology, MethodologyAlignment Alignment)>> GetMinigameDataAsync(
+        Player player)
+    {
+        // Find choice IDs the player has taken that belong to a Special situation
+        var takenChoiceIds = player.Decisions.Select(d => d.ChoiceId).ToList();
+
+        var specialChoices = await _context.Choices
+            .Where(c => takenChoiceIds.Contains(c.Id))
+            .Join(_context.Situations,
+                c => c.SituationId,
+                s => s.Id,
+                (c, s) => new { Choice = c, Situation = s })
+            .Where(x => x.Situation.Type == SituationType.Special)
+            .Select(x => x.Choice)
+            .ToListAsync();
+
+        if (!specialChoices.Any())
+            return new List<(Choice, MethodologyAlignment)>();
+
+        var specialChoiceIds = specialChoices.Select(c => c.Id).ToList();
+        var alignments = await _context.MethodologyAlignments
+            .Where(a => specialChoiceIds.Contains(a.ChoiceId))
+            .ToListAsync();
+
+        return specialChoices
+            .Join(alignments, c => c.Id, a => a.ChoiceId, (c, a) => (c, a))
+            .ToList();
+    }
+
+    public async Task<(bool Success, Player Player, string? ErrorMessage)> ApplyMinigameDeltaAsync(
+        Player player, Stats delta)
+    {
+        try
+        {
+            player.ApplyDelta(delta);
+            _context.Update(player);
+            await _context.SaveChangesAsync();
+            return (true, player, null);
+        }
+        catch (DatabaseOperationException ex)
+        {
+            _logger.LogError(ex, "Database error applying minigame delta for player {PlayerId}", player.Id);
+            _context.Entry(player).State = EntityState.Unchanged;
+            return (false, player, "Unable to save progress. Please try again.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error applying minigame delta for player {PlayerId}", player.Id);
+            _context.Entry(player).State = EntityState.Unchanged;
+            return (false, player, "An unexpected error occurred. Please try again.");
+        }
+    }
 }

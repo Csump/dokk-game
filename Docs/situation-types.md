@@ -17,8 +17,27 @@ Single-select választás több opció közül. A felületen több döntéslehet
 
 ## Minijáték `(Minigame = 4)`
 
-Jelenleg infóként működik, a későbbi egyedi játékmenet implementálását készíti elő: párosítások, csoportosítások stb.
+Drag-and-drop konstruktív összehangolási játék. Egy képernyőn jelenik meg 3 Módszertan (amelyeket a játékos az előző Special szituációban választott ki), és hozzájuk rendelendő Cél és Értékelés kártyák. A játékosnak a Cél- és Értékelés-kártyákat kell a helyes Módszertanhoz húzni.
 
-## Spéci `(Special = 5)`
+**Mechanika:**
+- A helyes párosítás „rögzül" (nem mozgatható tovább).
+- A helytelen párosítás eltávolítható és máshova helyezhető.
+- Mindkét esetben statisztikamódosítás (delta) kerül alkalmazásra – a helyes/helytelen deltákat a `methodology_alignments` tábla tárolja Módszertanonként.
+- A szituáció akkor ér véget (és a játékos tovább léphet), ha mind a 6 slot (3 Cél + 3 Értékelés) helyesen ki van töltve.
 
-Jelenleg döntésként működik, a későbbi multi-select implementálását készíti elő.
+**Adatok forrása:** A Módszertan-kártyák a játékos által a megelőző Special szituációban kiválasztott döntések szövegéből jönnek. A helyes Cél és Értékelés szövegek a `methodology_alignments` táblából töltődnek be.
+
+## Multi-select / Többes választás `(Special = 5)`
+
+Többes kiválasztás több opció közül. A játékos egyszerre több döntést választhat ki, majd egy „Megerősítés" gombbal véglegesíti a választást.
+
+**Mechanika:**
+- A `situations.required_selections` mező határozza meg a kötelezően kiválasztandó opciók számát (konfigurálható szituációnként).
+- A kiválasztott opciók vizuálisan kiemelésre kerülnek.
+- Amíg a kötelező szám nincs elérve, a Megerősítés gomb inaktív.
+- Minden választott opcióhoz tartozó stat-delta alkalmazásra kerül.
+- A már véglegesített szituáción a gombok inaktívvá válnak (visszatéréskor sem lehet újra választani).
+
+## Spéci `(Special = 5)` – Korábbi viselkedés
+
+Korábban döntésként működött, workaround-ként. Ez mostantól a teljes multi-select implementációval váltja fel.
