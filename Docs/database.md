@@ -74,6 +74,7 @@ Tábla neve: `situations`
 	- 4 (minijáték)
 	- 5 (spéci)
 - `next_situation_id`: A következő szituáció azonosítója. Infó és minijáték típusú szituációk esetén kötelező kitölteni, minden más esetben üresen hagyandó.
+- `required_selections`: Csak multi-select (Special) szituációknál kötelező kitölteni. Megadja, hogy a játékosnak hány opciót kell kiválasztania.
 
 Példa hozzáadásra:
 
@@ -140,7 +141,27 @@ Tábla neve: `decisions`
 
 Ebbe a táblába manuálisan nem kell belenyúlni. A kiürítéséhez a `05_reset.sql` scriptet kell futtatni.
 
-## Az adatbázis szerkesztése
+### Módszertani összehangolások (minijátékhoz)
+
+Tábla neve: `methodology_alignments`
+
+A minijáték szituációhoz szükséges adatokat tárolja. Minden sor egy módszertanhoz (choice-hoz) rendeli hozzá a konstruktív összehangoláshoz szükséges helyes Cél és Értékelés szövegét, valamint a helyes és helytelen párosítás esetén alkalmazandó stat-deltákat.
+
+- `id`: A sor azonosítója.
+- `choice_id`: A módszertan döntésopciónak (`choices`) azonosítója (FK).
+- `aim_text`: A helyes tanulási cél szövege.
+- `assessment_text`: A helyes értékelési eszköz szövege.
+- `correct_delta_*`: A helyes párosításért járó statváltozás értéke (7 stat).
+- `incorrect_delta_*`: A helytelen párosítási kísérletért járó statváltozás értéke (7 stat).
+
+Példa hozzáadásra:
+
+```sql
+INSERT INTO methodology_alignments (choice_id, aim_text, assessment_text, correct_delta_competency, correct_delta_selfreflection, incorrect_delta_competency)
+VALUES (15, 'A hallgatók képesek legyenek...', 'Csoportos prezentáció értékelési rubric alapján.', 2, 1, -1);
+```
+
+
 
 Az adatbázis tartalmát [SQL scriptekkel](https://www.w3schools.com/sql/sql_examples.asp) lehet szerkeszteni és megtekinteni.
 

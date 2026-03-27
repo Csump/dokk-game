@@ -37,6 +37,38 @@ public class Player
         }
     }
 
+    public void TakeMultipleChoices(IEnumerable<Choice> choices, Situation situation)
+    {
+        foreach (var choice in choices)
+        {
+            Stats.ApplyDelta(choice.DeltaStats);
+            Decisions.Add(new DecisionLog
+            {
+                ChoiceId = choice.Id,
+                TakenAt = DateTime.UtcNow
+            });
+        }
+
+        if (situation.IsTerminal)
+        {
+            CompletedAt = DateTime.UtcNow;
+            return;
+        }
+
+        if (!situation.IsHalftime)
+        {
+            // All choices in a multi-select lead to the same next situation
+            var firstChoice = choices.FirstOrDefault();
+            if (firstChoice != null)
+                CurrentSituationId = firstChoice.NextSituationId;
+        }
+    }
+
+    public void ApplyDelta(Stats delta)
+    {
+        Stats.ApplyDelta(delta);
+    }
+
     public void Proceed(Situation situation)
     {
         if (situation.IsTerminal)

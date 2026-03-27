@@ -15,4 +15,5 @@ public class Situation
     public int? NextSituationId { get; set; }
     public List<Choice> Choices { get; set; } = new();
     public SituationType Type { get; }
+    public int? RequiredSelections { get; set; }
 }

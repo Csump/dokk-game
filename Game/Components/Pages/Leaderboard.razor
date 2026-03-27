@@ -88,8 +88,8 @@
     {
         if (GameState.CurrentPlayer is not null)
         {
-            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl", 
-                (int)GameState.CurrentPlayer.Type.Gender, 
+            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl",
+                (int)GameState.CurrentPlayer.Type.Gender,
                 (int)GameState.CurrentPlayer.Type.Age);
             await JS.InvokeVoidAsync("faviconHelper.changeFavicon", iconUrl);
         }
@@ -152,7 +152,7 @@
         switch (stats.Energy + stats.Success)
         {
             case < 45:
-                return "Kevéssé jó! Kedves Játékos! A pontszámod alapján jösszességében nem túj jó teljesítménnyel zártad ezt a játékot, mert a végére alacsony pontszámod maradt. Ez azt jelenti, hogy a játék során több olyan döntést is hoztál, ami nagyon sok energiát emésztett fel, viszont alig sikerült vele növelned a hallgatói elégedettséget. A félév végére teljesen elfáradtál, leerültél és ennek ellenére nem sikerült elégedettebbé tenni a hallgatóidat.Arra érdemes figyelni, hogy bár fontos a hallgatói elégedettség, de az is fontos, hogy oktatóként ne használjuk fel, égessük el az összes energiánkat.";
+                return "Kevéssé jó! Kedves Játékos! A pontszámod alapján összességében nem túj jó teljesítménnyel zártad ezt a játékot, mert a végére alacsony pontszámod maradt. Ez azt jelenti, hogy a játék során több olyan döntést is hoztál, ami nagyon sok energiát emésztett fel, viszont alig sikerült vele növelned a hallgatói elégedettséget. A félév végére teljesen elfáradtál, lemerültél és ennek ellenére nem sikerült elégedettebbé tenni a hallgatóidat.Arra érdemes figyelni, hogy bár fontos a hallgatói elégedettség, de az is fontos, hogy oktatóként ne használjuk fel, égessük el az összes energiánkat.";
 
             case >= 55:
                 if (stats.Energy >= 15)

@@ -19,6 +19,7 @@ public class GameDbContext : DbContext
     public DbSet<Situation> Situations => Set<Situation>();
     public DbSet<Choice> Choices => Set<Choice>();
     public DbSet<DecisionLog> Decisions => Set<DecisionLog>();
+    public DbSet<MethodologyAlignment> MethodologyAlignments => Set<MethodologyAlignment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,6 +90,7 @@ public class GameDbContext : DbContext
             entity.Property(e => e.IsHalftime).HasColumnName("is_halftime");
             entity.Property(e => e.IsTerminal).HasColumnName("is_terminal");
             entity.Property(e => e.NextSituationId).HasColumnName("next_situation_id");
+            entity.Property(e => e.RequiredSelections).HasColumnName("required_selections");
             entity.Property(e => e.Type)
                 .HasColumnName("situation_type")
                 .HasConversion<int>();
@@ -113,6 +115,38 @@ public class GameDbContext : DbContext
                 stats.Property(s => s.Creativity).HasColumnName("delta_creativity");
                 stats.Property(s => s.Cooperation).HasColumnName("delta_cooperation");
                 stats.Property(s => s.Success).HasColumnName("delta_motivation");
+            });
+        });
+
+        // MethodologyAlignment table mapping
+        modelBuilder.Entity<MethodologyAlignment>(entity =>
+        {
+            entity.ToTable("methodology_alignments");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ChoiceId).HasColumnName("choice_id");
+            entity.Property(e => e.AimText).HasColumnName("aim_text");
+            entity.Property(e => e.AssessmentText).HasColumnName("assessment_text");
+
+            entity.OwnsOne(e => e.CorrectDelta, stats =>
+            {
+                stats.Property(s => s.Energy).HasColumnName("correct_delta_energy");
+                stats.Property(s => s.SelfReflection).HasColumnName("correct_delta_selfreflection");
+                stats.Property(s => s.Competency).HasColumnName("correct_delta_competency");
+                stats.Property(s => s.Initiative).HasColumnName("correct_delta_initiative");
+                stats.Property(s => s.Creativity).HasColumnName("correct_delta_creativity");
+                stats.Property(s => s.Cooperation).HasColumnName("correct_delta_cooperation");
+                stats.Property(s => s.Success).HasColumnName("correct_delta_motivation");
+            });
+
+            entity.OwnsOne(e => e.IncorrectDelta, stats =>
+            {
+                stats.Property(s => s.Energy).HasColumnName("incorrect_delta_energy");
+                stats.Property(s => s.SelfReflection).HasColumnName("incorrect_delta_selfreflection");
+                stats.Property(s => s.Competency).HasColumnName("incorrect_delta_competency");
+                stats.Property(s => s.Initiative).HasColumnName("incorrect_delta_initiative");
+                stats.Property(s => s.Creativity).HasColumnName("incorrect_delta_creativity");
+                stats.Property(s => s.Cooperation).HasColumnName("incorrect_delta_cooperation");
+                stats.Property(s => s.Success).HasColumnName("incorrect_delta_motivation");
             });
         });
     }

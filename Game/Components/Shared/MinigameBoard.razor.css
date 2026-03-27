@@ -1,0 +1,228 @@
+/* MinigameBoard layout */
+.minigame-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+}
+
+/* Pool area */
+.minigame-pool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.pool-label {
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--powder-400);
+    margin: 0;
+}
+
+.pool-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 56px;
+}
+
+/* Pool draggable items */
+.pool-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: grab;
+    max-width: 240px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.pool-item:hover {
+    transform: scale(1.03);
+}
+
+.pool-item:active {
+    cursor: grabbing;
+}
+
+.aim-item {
+    background: linear-gradient(180deg, var(--cobalt-800) 0%, var(--cobalt-900) 100%);
+    border: 2px solid var(--cobalt-600);
+}
+
+.assessment-item {
+    background: linear-gradient(180deg, var(--olive-800) 0%, var(--olive-900) 100%);
+    border: 2px solid var(--olive-600);
+}
+
+/* Methodology cards */
+.methodology-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.methodology-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+}
+
+.methodology-name {
+    font-weight: 700;
+    font-size: 1em;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Drop slots */
+.alignment-slot {
+    min-height: 70px;
+    border-radius: 10px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+}
+
+.alignment-slot:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.aim-slot {
+    border-color: var(--cobalt-700);
+}
+
+.assessment-slot {
+    border-color: var(--olive-700);
+}
+
+.slot-placeholder {
+    font-size: 0.78em;
+    color: var(--powder-500);
+    text-align: center;
+}
+
+/* Slot state classes */
+.slot-correct {
+    border-color: var(--emerald-500) !important;
+    border-style: solid !important;
+    background: rgba(41, 140, 83, 0.1) !important;
+}
+
+.slot-incorrect {
+    border-color: var(--flesh-500) !important;
+    border-style: solid !important;
+    background: rgba(180, 96, 74, 0.1) !important;
+}
+
+/* Placed items */
+.placed-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    width: 100%;
+    position: relative;
+}
+
+.placed-item.correct {
+    background: rgba(41, 140, 83, 0.2);
+    border: 1px solid var(--emerald-600);
+}
+
+.placed-item.incorrect {
+    background: rgba(180, 96, 74, 0.2);
+    border: 1px solid var(--flesh-600);
+}
+
+.item-label {
+    font-size: 0.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--powder-400);
+}
+
+.item-text {
+    font-size: 0.85em;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--flesh-700);
+    border: none;
+    color: var(--flesh-100);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.75em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.remove-btn:hover {
+    background: var(--flesh-500);
+    transform: scale(1.1);
+}
+
+/* Success state */
+.minigame-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    animation: fadeIn 0.4s ease;
+}
+
+.minigame-success p {
+    font-weight: 700;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .methodology-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .pool-item {
+        max-width: 100%;
+        width: 100%;
+    }
+}
