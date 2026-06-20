@@ -11,7 +11,8 @@ html {
     overflow: hidden;
 }
 
-html, body {
+html,
+body {
     font-family: 'Hanken Grotesk', Helvetica, sans-serif;
     width: 100%;
     height: 100%;
@@ -44,25 +45,19 @@ html, body {
 
 #main-logo-button {
     height: 55px;
-    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03)) 
-            drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02)) 
-            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
+    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03)) drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02)) drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
 
     transition: transform 0.25s cubic-bezier(0.34, 2, 0.64, 2),
-                filter 0.25s cubic-bezier(0.34, 2, 0.64, 2);
+        filter 0.25s cubic-bezier(0.34, 2, 0.64, 2);
 }
 
 #main-logo-button:hover {
-    filter: drop-shadow(0px 0px 7px rgba(255, 255, 255, 0.07))
-            drop-shadow(0px 0px 12px rgba(255, 255, 255, 0.05))
-            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.03));
+    filter: drop-shadow(0px 0px 7px rgba(255, 255, 255, 0.07)) drop-shadow(0px 0px 12px rgba(255, 255, 255, 0.05)) drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.03));
     transform: scale(105%);
 }
 
 #main-logo-button:active {
-    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03))
-            drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02))
-            drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
+    filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.03)) drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.02)) drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.01));
     transform: scale(97%);
 }
 
@@ -82,9 +77,9 @@ h1 {
     padding: 0;
 }
 
-    h1:focus {
-        outline: none;
-    }
+h1:focus {
+    outline: none;
+}
 
 h2 {
     font-weight: 800;
@@ -96,4 +91,9 @@ h3 {
     font-weight: 800;
     font-size: 1.5rem;
     letter-spacing: -0.02em;
+}
+
+b {
+    font-weight: 800;
+    -webkit-text-stroke: 0.4px currentColor;
 }

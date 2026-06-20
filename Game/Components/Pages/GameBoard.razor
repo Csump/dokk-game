@@ -52,7 +52,7 @@
 
                 @if (currentSituation.Text is not null && currentSituation.Text.Length > 0)
                 {
-                    <p class="text">@currentSituation.Text</p>
+                    <p class="text">@((MarkupString)(currentSituation.Text ?? ""))</p>
                 }
             </div>
 
@@ -185,8 +185,8 @@
     {
         if (player is not null)
         {
-            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl", 
-                (int)player.Type.Gender, 
+            var iconUrl = await JS.InvokeAsync<string>("faviconHelper.getCharacterIconUrl",
+                (int)player.Type.Gender,
                 (int)player.Type.Age);
             await JS.InvokeVoidAsync("faviconHelper.changeFavicon", iconUrl);
         }

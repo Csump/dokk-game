@@ -32,18 +32,15 @@
     flex-grow: 0;
 }
 
-    .mail-container p {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-        padding: 0;
-        gap: 35px;
-        flex: none;
-        order: 0;
-        align-self: center;
-        flex-grow: 0;
-    }
+.mail-container p {
+    display: block;
+    width: 100%;
+    padding: 0;
+    flex: none;
+    order: 0;
+    align-self: center;
+    flex-grow: 0;
+}
 
 .mail-body {
     display: flex;
@@ -55,4 +52,15 @@
     position: fixed;
     right: 106px;
     bottom: 40px;
+}
+
+.home-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    mix-blend-mode: multiply;
 }

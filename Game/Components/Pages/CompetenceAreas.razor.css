@@ -1,0 +1,56 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6.25vh;
+  isolation: isolate;
+  position: relative;
+  background: linear-gradient(0deg, var(--slate-900) 0%, var(--slate-800) 100%);
+  overflow-y: scroll;
+}
+
+.text-container-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6.25vh 10vw 6.25vh 10vw;
+
+  flex: none;
+  order: 2;
+  align-self: stretch;
+  flex-grow: 0;
+  z-index: 2;
+}
+
+.text-container-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 6vw 0 6vw;
+  gap: 15px;
+  flex: none;
+  order: 0;
+  align-self: center;
+  flex-grow: 0;
+}
+
+.home-background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  mix-blend-mode: multiply;
+}
+
+.continue-wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+h3 {
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
+}

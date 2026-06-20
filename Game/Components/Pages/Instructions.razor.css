@@ -1,4 +1,4 @@
-﻿.main-container {
+.main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 6.25vh 40vw 6.25vh 10vw;
+    padding: 6.25vh 10vw 6.25vh 10vw;
 
     flex: none;
     order: 2;
@@ -27,25 +27,11 @@
     flex-direction: column;
     align-items: flex-start;
     padding: 0 6vw 0 6vw;
-    gap: 35px;
+    gap: 30px;
     flex: none;
     order: 0;
     align-self: center;
     flex-grow: 0;
-}
-
-.home-character {
-    position: fixed;
-    height: 100vh;
-    right: 0;
-    bottom: 0;
-
-    filter: drop-shadow(0px 0px 17px rgba(255, 255, 255, 0.05)) drop-shadow(0px 0px 50px rgba(255, 255, 255, 0.05)) drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.05));
-
-    flex: none;
-    order: 4;
-    flex-grow: 0;
-    z-index: 1;
 }
 
 .home-background {
@@ -57,4 +43,9 @@
     left: 0;
     z-index: -1;
     mix-blend-mode: multiply;
+}
+
+.continue-wrapper {
+    display: flex;
+    justify-content: flex-start;
 }

@@ -19,7 +19,7 @@
     <div class="setup-content">
         <div class="upper-wrapper">
             <h1>Karakterválasztás</h1>
-            <p>Készítsd el karakteredet a kalandhoz! Válassz szereplőt, állítsd be képzettségi szintjét, és indulhat is a játék!</p>
+            <p>Válassz egy számodra szimpatikus szereplőt és indulhat is a játék!</p>
 
             <div class="level-selector">
                 <button type="button"
@@ -256,7 +256,7 @@
             _isSubmitting = false;
         }
     }
-    
+
     private static string FormatEnum(Enum e)
         => string.Join(' ', Regex.Split(e.ToString(), "(?<=.)(?=[A-Z])"));
 
@@ -298,14 +298,14 @@
         public required string IconUrl { get; set; }
         public required string Color { get; set; }
     }
-    
+
     private readonly List<CharacterData> Characters = new()
     {
         new CharacterData {
             Gender = Gender.Male, Age = Age.Young,
             Name = "Máté",
-            Quote = "Másképp fogom csinálni, mint a professzoraim!",
-            Description = "A doktori kutatásában éppen az első adatfelvételeket szervezi, a témavezetőjével egy közös publikáción dolgoznak, ezen túl pedig a megélhetés érdekében további munkákat is vállal. Szereti a pörgést, társaságkedvelő ember, aki jól tudja beosztani az idejét.\nEzen az egyetemen végzett, és már a doktori jelentkezésnél megfogadta, hogy ha felveszik és tanítani fog, akkor megreformálja az oktatást, kiaknázza, hogy otthonosan mozog a digitális térben, és figyel majd a hallgatói igényekre. Először főleg online platformok kialakításában, szervezésében segített, majd hirtelen két önálló kurzust is kapott, ahova igyekszik a vitát bevinni az órákra, online csoportos feladatokat ad, de a hallgatók sokszor nem értik a feladatokat vagy nem csinálják meg. Ez eléggé elbizonytalanítja, hogy jó úton jár-e.",
+            Quote = "Másképp fogom csinálni, mint a professzoraim.",
+            Description = "Máté doktoranduszként egyszerre kutat, publikál és tanít, miközben más munkákat is vállal a megélhetésért. A pörgés nem zavarja: <b>tele van energiával</b>, szeret emberek között lenni, és <b>ritkán riad vissza az új kihívásoktól</b>. Már hallgatóként elhatározta, hogy oktatóként jobban figyel majd a hallgatók igényeire, mint egykori tanárai. Az online eszközök és <b>digitális megoldások</b> világában különösen otthonosan mozog, ezért gyakran segített kollégáinak kurzusokat fejleszteni. Most azonban először kapott saját kurzusokat, és néha elbizonytalanodik, amikor a hallgatók nem úgy reagálnak az ötleteire, ahogy elképzelte. Ilyenkor sokat gondolkodik azon, hogyan lehetne még jobban csinálni.",
             ImageUrl = "/src/Characters/large-char-young-male.png",
             IconUrl = "/src/Characters/large-char-young-male-icon.png",
             Color = "gold"
@@ -314,7 +314,7 @@
             Gender = Gender.Female, Age = Age.Old,
             Name = "Gabriella",
             Quote = "Nekem a tanítás okoz igazi örömet!",
-            Description = "Az oktatási és kutatási sikerei miatt témavezetője terelte a doktori képzésbe. Több cikke is megjelent, de inkább a fejlesztések vonzották és folyamatosan új módszereket próbált ki az egyetemi oktatása során. Az utóbbi években elbizonytalanodott munkája értékében, mert az egyetemen az oktatás minősége teljesen háttérbe szorult a kutatói teljesítményekhez képest.\nA hallgatók nagyon tisztelik és kedvelik közvetlensége és segítőkészsége miatt. Minden évben új módszerekkel tanít, ezeket szívesen megosztja kollégáival, gyakran ő tanítja meg a legújabb digitális eszközök használatára munkatársait. Csapatjátékos, ezért is gondolnak rá minden újonnan induló oktatási fejlesztés, projekt esetén.",
+            Description = "Gabriella kutatóként indult, de hamar rájött, hogy számára az oktatás jelenti az igazi sikerélményt. Hallgatói különösen kedvelik közvetlensége és segítőkészsége miatt. <b>Kreatív és tapasztalt oktató</b>, aki szinte minden tanévben kipróbál valami újat: új módszereket, digitális eszközöket vagy értékelési formákat. <b>Kollégái gyakran hozzá fordulnak tanácsért</b>, és szívesen megosztja velük saját tapasztalatait. Az utóbbi időben azonban egyre inkább úgy érzi, hogy az oktatási munka háttérbe szorul a kutatási teljesítmények mögött. Emiatt ritkábban kezdeményez új projekteket, de ha egy jó ügy mellé kell állni, rá mindig lehet számítani.",
             ImageUrl = "/src/Characters/large-char-old-female.png",
             IconUrl = "/src/Characters/large-char-old-female-icon.png",
             Color = "olive"
@@ -323,7 +323,7 @@
             Gender = Gender.Male, Age = Age.Old,
             Name = "Iván",
             Quote = "Örök idealista.",
-            Description = "A PhD után piaci cégeknél dolgozott külföldön. Már elmúlt 37, amikor az egyetemre került. A kollégákkal jól kijön, sokat tanult tőlük, csakúgy, mint hallgatóitól. Szeret kísérletezni a tanításban. Mivel jól ismeri az egyetemen kívüli világot, azt is jól látja, hogy a mai cégek milyen típusú kompetenciákat várnak el, és hogy sajnos az egyetem ezzel nem tud igazán lépést tartani. Ezért is kezdett egyre több RDI projektet behozni, majd egy nemzetközi oktatásfejlesztési projektbe is belevágott, mivel adódott egy jó pályázati lehetőség.\nSzeret másoktól tanulni és szerinte az igazi oktató és kutató élvezi a tanulást és másokat is erre sarkall. Reméli, hogy a mostani csapat támogatni fogja, mert a kollégái gyakran ugratják azzal, hogy ő az örök idealista, álmodozó.",
+            Description = "Iván több évnyi külföldi vállalati tapasztalat után került az egyetemre. Jól látja, milyen tudásra és kompetenciákra van szükség az egyetemen kívüli világban, ezért gyakran gondolkodik azon, hogyan lehetne közelebb hozni egymáshoz az oktatást és a gyakorlatot. <b>Szeret tanulni, kísérletezni és új lehetőségeket keresni</b>, ezért több innovációs és nemzetközi projektben is részt vett. Nem zavarja, ha valamit még nem tud – inkább <b>kíváncsivá</b> teszi. Kollégái néha mosolyogva „örök idealistának” nevezik, mert gyakran nagyobb távlatokban gondolkodik, mint mások. Ő viszont hisz abban, hogy az egyetem képes megújulni, ha akadnak, akik hajlandók tenni érte.",
             ImageUrl = "/src/Characters/large-char-old-male.png",
             IconUrl = "/src/Characters/large-char-old-male-icon.png",
             Color = "rose"
@@ -331,8 +331,8 @@
         new CharacterData {
             Gender = Gender.Female, Age = Age.Young,
             Name = "Zsófia",
-            Quote = "Szeretek itt dolgozni, megbecsülik a munkám.",
-            Description = "Vidéken, kisvárosban született, ő az első diplomás a családban. A középiskoában jó tanuló volt, az érettségi után a fővárosba költözött, és másodszorra felvételt nyert az egyetemre is, ami nagyon tetszett neki. A kollégiumi élet nagy változást jelentett számára, kinyílt előtte a világ. A tanulás mellett viszont folyamatosan dolgozott különböző állásokban, többnyire nem a szakterületéhez kötődően.\nJól beszél angolul, ezért a doktori képzés alatt egy multinacionális cégnél helyezkedett el. Két éve dolgozik itt az egyetemen. Nehezebben barátkozik, de már elég jól ismeri a kari közösséget, viszont a csapatban dolgozás továbbra sem az erőssége. Kevés felsőoktatási tapasztalata miatt gyakran érzi bizonytalannak magát.  Szorgalmas, precíz munkaerő, nagy munkabírással.",
+            Quote = "Szeretek itt dolgozni, mert megbecsülik a munkám.",
+            Description = "Zsófia egy kisvárosból érkezett, és családjában elsőként szerzett diplomát. Sok munkával jutott el oda, ahol most tart, ezért természetes számára, hogy a sikerért meg kell dolgozni. Két éve oktat az egyetemen, korábban a doktori képzés mellett vállalati környezetben is tapasztalatot szerzett. <b>Szorgalmas, precíz és rendkívül kitartó</b>, a rá bízott feladatokat mindig lelkiismeretesen végigviszi. Folyamatosan keresi a fejlődési lehetőségeket, és gyakran <b>új ötletei</b> támadnak. Ugyanakkor még kevés oktatói tapasztalattal rendelkezik, ezért időnként bizonytalan a döntéseiben. Nehezen kér segítséget, és a problémákat többnyire egyedül próbálja megoldani.",
             ImageUrl = "/src/Characters/large-char-young-female.png",
             IconUrl = "/src/Characters/large-char-young-female-icon.png",
             Color = "viridian"
